@@ -1,0 +1,27 @@
+.App {
+  display: grid;
+  grid-template-areas: 1fr auto / auto;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+  to {
+    transform: rotate3d(1, 1, 1, 360deg);
+  }
+}
+
+.aleph {
+  animation: spin 3s linear infinite;
+  fill: rgb(118, 0, 0);
+  width: 50%;
+  margin-top: 10%;
+  justify-self: center;
+}
+
+button {
+  justify-self: center;
+  width: 100px;
+  height: 50px;
+}
