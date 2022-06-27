@@ -1,5 +1,9 @@
 .App {
   text-align: center;
+  background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
 }
 
 @keyframes spin {
@@ -13,8 +17,8 @@
 
 .aleph {
   animation: spin 3s linear infinite;
-  fill: rgb(118, 0, 0);
+  fill: rgb(228, 0, 0);
   width: 50%;
-  margin-top: 10%;
+  margin-top: 20%;
   justify-self: center;
 }
