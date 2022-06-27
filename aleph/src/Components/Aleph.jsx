@@ -3,6 +3,7 @@ const Aleph = (props) => {
   return (
     <svg
       className="aleph"
+      style={props.colors ? {fill: `rgb(${props.colors[0]}, ${props.colors[1]}, ${props.colors[2]})`} : {fill: 'red'}}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 5650 5800"
     >

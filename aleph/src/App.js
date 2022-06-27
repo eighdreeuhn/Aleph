@@ -3,9 +3,8 @@ import * as Tone from 'tone'
 import Aleph from './Components/Aleph'
 import Blip from './Components/Blip'
 import SearchForm from './Components/SearchForm'
-import Empty from './Components/Empty'
 import './App.css'
-import { Player } from 'tone'
+import { DuoSynth, Player, Synth } from 'tone'
 
 //Main page
 //All logic takes place here
@@ -18,14 +17,26 @@ function App () {
   let load = false
   let masterVolume = 1
   let bpm
+//   let harmonySpecs = {
+//     "blockTime": ,
+// envelope
+// frequency
+// input
+// name
+// numberOfInputs
+// numberOfOutputs
+// onsilence
+// oscillator
+// output
+// portamento
+// sampleTime
+// version
+// volume
+
+//   }
 
   const gain = new Tone.Gain(masterVolume).toDestination()
-  const phaser = new Tone.Phaser(
-    {
-      "frequency": 15,
-      "octaves": 5,
-      "baseFrequency": 110
-    }).connect(gain)
+  const phaser = new Tone.FeedbackDelay("8n", 0.75).connect(gain)
   
   //----------State variables----------//
   
@@ -40,11 +51,15 @@ function App () {
 
   const play = function() {
     const now = Tone.now()
-    // const test = new Tone.AMSynth().connect(phaser)
-    // test.triggerAttackRelease('A2', '1m', now, 1)
-    const emptyPlayer = new Tone.Player('src/resources/Sad Trombone Wah Wah Wah Fail Sound Effect.mp3').connect(phaser)
-    emptyPlayer.autostart = true
-    console.log(emptyPlayer)
+    const test = new Tone.PolySynth(Tone.AMSynth).connect(phaser)
+    console.log(test)
+    test.triggerAttackRelease(ROOT, '2m', now, 1)
+    test.triggerAttackRelease(ROOT*(A**4), '2m', now + 0.25, 1)
+    test.triggerAttackRelease(ROOT*(A**7), '2m', now + 0.5, 1)
+    test.triggerAttackRelease(ROOT*2, '2m', now + 0.75, 1)
+    // const emptyPlayer = new Tone.Player('src/resources/Sad Trombone Wah Wah Wah Fail Sound Effect.mp3').connect(phaser)
+    // emptyPlayer.autostart = true
+    // console.log(emptyPlayer)
   }
 
   const interpolateNotes = phrase => {
@@ -81,9 +96,8 @@ function App () {
   console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}`)
   return (
     <div className='App'>
-      <Aleph />
+      <Aleph color={unanswer.colors}/>
       <SearchForm unsearch={unsearch} utils={[handlePhraseChange, handlePhraseSubmit]} />
-      {/* <Empty /> */}
     </div>
   )
 }
