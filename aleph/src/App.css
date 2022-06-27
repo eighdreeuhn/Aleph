@@ -1,9 +1,10 @@
 .App {
+  display: grid;
+  grid-template: 1fr/ auto;
   text-align: center;
   background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
   background-repeat: no-repeat;
   background-size: cover;
-  height: 1200px;
 }
 
 @keyframes spin {
@@ -27,5 +28,6 @@
   text-align: center;
   width: 350px;
   height: 25px;
-  margin-top: 2em;
+  margin-top: 10em;
+  margin-bottom: 20em;
 }
