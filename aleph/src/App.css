@@ -2,3 +2,19 @@
   text-align: center;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+  to {
+    transform: rotate3d(1, 1, 1, 360deg);
+  }
+}
+
+.aleph {
+  animation: spin 3s linear infinite;
+  fill: rgb(118, 0, 0);
+  width: 50%;
+  margin-top: 10%;
+  justify-self: center;
+}
