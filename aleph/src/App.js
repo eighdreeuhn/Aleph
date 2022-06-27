@@ -12,14 +12,14 @@ function App () {
   //----------Global constants--------//
 
   const A = 2 ** (1 / 12)
-  const ROOT = 55
+  const ROOT = 110
   let load = false
   let bpm
 
   //----------State variables----------//
 
   const [unsearch, setUnsearch] = useState('')
-  const [answer, setAnswer] = useState({})
+  const [unanswer, setUnanswer] = useState({})
 
   //----------main functions----------//
 
@@ -34,10 +34,15 @@ function App () {
   const handlePhraseSubmit = function (e) {
     e.preventDefault()
     const notes = interpolateNotes(unsearch)
+    console.log(notes[0])
+    let unanswerCopy = {...unanswer}
+    unanswerCopy.notes = notes
+    setUnanswer(unanswerCopy)
     setUnsearch('')
     // play(notes)
   }
   //----------App rendering----------//
+  console.log(`And the answer is : ${unanswer.notes}`)
   return (
     <div className='App'>
       <Aleph />

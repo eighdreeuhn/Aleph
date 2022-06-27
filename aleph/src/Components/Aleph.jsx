@@ -1,7 +1,5 @@
 const Aleph = (props) => {
 
-    console.log(props)
-
   return (
     <svg
       className="aleph"
