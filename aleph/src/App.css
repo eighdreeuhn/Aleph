@@ -3,7 +3,7 @@
   background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100%;
+  height: 1200px;
 }
 
 @keyframes spin {
@@ -18,7 +18,14 @@
 .aleph {
   animation: spin 3s linear infinite;
   fill: rgb(228, 0, 0);
-  width: 50%;
-  margin-top: 20%;
+  width: 30%;
+  margin-top: 10%;
   justify-self: center;
+}
+
+.search-field {
+  text-align: center;
+  width: 350px;
+  height: 25px;
+  margin-top: 2em;
 }
