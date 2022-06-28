@@ -18,7 +18,7 @@
 
 .aleph {
   animation: spin 3s linear infinite;
-  fill: rgb(228, 0, 0);
+  fill: rgb(255, 255, 255);
   width: 30%;
   margin-top: 25%;
   justify-self: center;

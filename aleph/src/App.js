@@ -19,9 +19,10 @@ function App () {
   //----------Wiring network----------//
   
   let masterVolume = 1
-  let bpm = 120
+  let bpm = 100
   let cycle
   let beatConductor
+  let rootNote
   const gain = new Tone.Gain(masterVolume).toDestination()
   const phaser = new Tone.FeedbackDelay("8n", 0.1).connect(gain)
 
@@ -36,12 +37,13 @@ function App () {
   
   const [unsearch, setUnsearch] = useState('')
   const [unanswer, setUnanswer] = useState({})
-  const [playing, setPlaying] = useState(false)
+  const [playerReady, setPlayerReady] = useState(false)
   
   //----------main functions----------//
 
   //Set-up for the loop and starts the main Transport//
     const preBuild = function() {
+      console.log(unanswer, playerReady)
       bassDrum = new Tone.MembraneSynth(
         {
           "attack": 0.1,
@@ -71,16 +73,17 @@ function App () {
     const play = function(time) {
     Tone.Transport.bpm.exponentialRampTo(bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
-    beatConductor = Tone.Transport.position.split(':')[0]
-    console.log(beatConductor)
+    beatConductor = parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    rootNote = unanswer.notes[beatConductor]
+    console.log(rootNote)
     bassDrum.triggerAttackRelease(22.5, '4n', time, 1)
     hiHat.triggerAttackRelease(880, '16n', time + 0.75, 1)
-    mainVoice.triggerAttackRelease(ROOT, '4n', time, 2)
-    mainVoice.triggerAttackRelease(ROOT*(A**7)*4, '8n', time + 0.5, 1)
-    mainVoice.triggerAttackRelease(ROOT*2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(ROOT*(A**7)*8, '8n', time + 1, 1)
-    harmonizer.triggerAttackRelease(ROOT*(A**7)*4, '8n', time + 1, 1)
-    harmonizer.triggerAttackRelease(ROOT*(A**7)*2, '8n', time + 1, 1)
+    mainVoice.triggerAttackRelease(rootNote, '4n', time, 2)
+    mainVoice.triggerAttackRelease(rootNote*(A**7)*4, '8n', time + 0.5, 1)
+    mainVoice.triggerAttackRelease(rootNote*2, '8n', time + 0.75, 1)
+    harmonizer.triggerAttackRelease(rootNote*(A**7)*8, '8n', time + .75, 1)
+    harmonizer.triggerAttackRelease(rootNote*(A**7)*4, '8n', time + .75, 1)
+    harmonizer.triggerAttackRelease(rootNote*(A**7)*2, '8n', time + .75, 1)
   }
 
   const stopPlay = function() {
@@ -121,21 +124,22 @@ function App () {
     if (unsearch.length !== 0) {
       const notes = interpolateNotes(unsearch)
       const colors = extractColors(unsearch)
-      console.log(colors)
       let unanswerCopy = {...unanswer}
       unanswerCopy.notes = notes
       unanswerCopy.colors = colors
       setUnanswer(unanswerCopy)
       setUnsearch('')
-    } else {
-      console.log("Even I don't know the unanswer to that :(")
-      preBuild()
+      setPlayerReady(true)
     }
+  }
 
+  if (playerReady) {
+    setPlayerReady(false)
+    preBuild()
   }
 
   //----------App rendering----------//
-  console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${bpm}`)
+  // console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${bpm}`)
   return (
     <div className='App'>
       <Aleph color={unanswer.colors}/>
