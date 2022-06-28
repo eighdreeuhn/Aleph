@@ -19,7 +19,7 @@ function App () {
   //----------Wiring network----------//
   
   let masterVolume = 1
-  let measure = 4
+  let bpm = 120
   let cycle
   let beatConductor
   const gain = new Tone.Gain(masterVolume).toDestination()
@@ -36,9 +36,11 @@ function App () {
   
   const [unsearch, setUnsearch] = useState('')
   const [unanswer, setUnanswer] = useState({})
+  const [playing, setPlaying] = useState(false)
   
   //----------main functions----------//
 
+  //Set-up for the loop and starts the main Transport//
     const preBuild = function() {
       bassDrum = new Tone.MembraneSynth(
         {
@@ -57,29 +59,46 @@ function App () {
         }
       ).connect(phaser)
       mainVoice = new Tone.PolySynth(FMSynth).connect(phaser)
-      harmonizer = new Tone.FatOscillator()
+      harmonizer = new Tone.PolySynth(Tone.MonoSynth).connect(phaser)
       console.log(harmonizer)
-      cycle = new Tone.Loop(play, measure)
+      cycle = new Tone.Loop(play, '1m')
       Tone.start()
       Tone.Transport.start()
       cycle.start()
     }
-
-
-  const play = function(time) {
+    
+    //Main player function//
+    const play = function(time) {
+    Tone.Transport.bpm.exponentialRampTo(bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
-    bassDrum.triggerAttackRelease(22.5, '4n', time, 2)
+    beatConductor = Tone.Transport.position.split(':')[0]
+    console.log(beatConductor)
+    bassDrum.triggerAttackRelease(22.5, '4n', time, 1)
     hiHat.triggerAttackRelease(880, '16n', time + 0.75, 1)
     mainVoice.triggerAttackRelease(ROOT, '4n', time, 2)
     mainVoice.triggerAttackRelease(ROOT*(A**7)*4, '8n', time + 0.5, 1)
     mainVoice.triggerAttackRelease(ROOT*2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(ROOT*(A**9)*8, '16n', time + 1, 1)
-    harmonizer.triggerAttackRelease(ROOT*(A**9)*8, '16n', time + 1.25, 1)
+    harmonizer.triggerAttackRelease(ROOT*(A**7)*8, '8n', time + 1, 1)
+    harmonizer.triggerAttackRelease(ROOT*(A**7)*4, '8n', time + 1, 1)
+    harmonizer.triggerAttackRelease(ROOT*(A**7)*2, '8n', time + 1, 1)
   }
 
   const stopPlay = function() {
     //need to research this
     console.log("Haven't figured this out yet.")
+  }
+
+  const rampUp = function() {
+    bpm += 5
+  }
+  const rampDown = function() {
+    bpm -= 5
+  }
+  const volUp = function() {
+    masterVolume = Math.abs(masterVolume += 0.1)
+  }
+  const VolDown = function() {
+    masterVolume = Math.abs(masterVolume -= 0.1)
   }
 
   //Hashing function for transforming character codes into wavelengths in hertz//
@@ -116,12 +135,16 @@ function App () {
   }
 
   //----------App rendering----------//
-  console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${measure}`)
+  console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${bpm}`)
   return (
     <div className='App'>
       <Aleph color={unanswer.colors}/>
-      <SearchForm unsearch={unsearch} utils={[handlePhraseChange, handlePhraseSubmit]} />
-      <button onClick={stopPlay}>Stopz!</button>
+        <SearchForm unsearch={unsearch} utils={[handlePhraseChange, handlePhraseSubmit]} />
+        <button onClick={stopPlay}>Stopz!</button>
+        <button onClick={rampUp}>Rampz!</button>
+        <button onClick={rampDown}>Slowz!</button>
+        <button onClick={volUp}>Loudz!</button>
+        <button onClick={VolDown}>Shhhz!!</button>
     </div>
   )
 }
