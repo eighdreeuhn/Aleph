@@ -1,6 +1,6 @@
 .App {
   display: grid;
-  grid-template: 1fr/ auto;
+  grid-template: 25% 50% 1fr/ auto;
   text-align: center;
   background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
   background-repeat: no-repeat;
@@ -16,18 +16,20 @@
   }
 }
 
-.aleph {
+.aleph { 
+  grid-template-rows: 1 / 2;
   animation: spin 10s linear infinite;
   fill: rgb(255, 255, 255);
   width: 30%;
-  margin-top: 35%;
+  margin-top: 20%;
   justify-self: center;
 }
 
 .search-field {
+  grid-template-rows: 2 / 3;
   text-align: center;
-  width: 350px;
-  height: 25px;
+  width: 50%;
+  height: 10%;
   margin-top: 10em;
 }
 
@@ -36,4 +38,8 @@ button {
   height: 50px;
   margin: 5px;
   border-radius: 5px;
+}
+
+.control {
+  margin-bottom: 25%;
 }

@@ -3,6 +3,7 @@ import * as Tone from 'tone'
 import Aleph from './Components/Aleph'
 import Blip from './Components/Blip'
 import SearchForm from './Components/SearchForm'
+import Footer from './Components/Footer'
 import './App.css'
 import { AMSynth } from 'tone'
 
@@ -59,7 +60,7 @@ function App () {
       release: 0.5
     }).connect(phaser)
     mainVoice = new Tone.PolySynth(AMSynth).connect(phaser)
-    harmonizer = new Tone.PolySynth(Tone.Synth).connect(phaser)
+    harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
     console.log(harmonizer)
     cycle = new Tone.Loop(play, '1m')
     Tone.start()
@@ -73,7 +74,8 @@ function App () {
     gain.gain.rampTo(masterVolume, 0.25)
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-    if (beatConductor === 1) {
+      console.log(beatConductor, Tone.Transport.position)
+    if (beatConductor) {
     }
     rootNote = unanswer.notes[beatConductor]
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time, 1)
@@ -98,14 +100,14 @@ function App () {
 
   //Ramp up the bpm of the main loop//
   const rampUp = function () {
-    // bpm += 5
-    // console.log(bpm)
+    unanswer.bpm += 5
+    console.log(unanswer.bpm)
   }
 
   //Ramp dowm the bpm of the main loop//
   const rampDown = function () {
-    // bpm -= 5
-    // console.log(bpm)
+   unanswer.bpm -= 5
+   console.log(unanswer.bpm)
   }
 
   //Increment the master volume//
@@ -189,7 +191,10 @@ function App () {
   return (
     <div className='App'>
       <Aleph color={unanswer.colors} />
+      <section className='control'>
       {controlPanel}
+      </section>
+      <Footer/>
     </div>
   )
 }

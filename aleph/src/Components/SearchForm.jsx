@@ -1,7 +1,7 @@
 const SearchForm = (props) => {
     return (
         <form onSubmit={props.utils[1]}>
-            <input className='search-field' type='text' onChange={props.utils[0]} placeholder='Un-ask your question... I will provide the un-answer' value={props.unsearch} />
+            <input className='search-field' type='text' onChange={props.utils[0]} placeholder='Un-ask your question...' value={props.unsearch} />
         </form>
     )
 }
