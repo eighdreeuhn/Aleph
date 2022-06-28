@@ -5,7 +5,7 @@ function App () {
   let cycle
   let bassDrum
   let hiHat
-  let bpm = .5
+  let bpm = 1
   let gain = 1
   const preGain = new Tone.Gain(gain).toDestination()
 
@@ -22,13 +22,14 @@ function App () {
   function beats (time) {
     preGain.gain.rampTo(gain, 0.25)
     bassDrum.triggerAttackRelease(50, '16n', time, 2)
-    hiHat.triggerAttackRelease(880, '32n', time + 0.25, 1)
+    hiHat.triggerAttackRelease(880, '32n', time + 0.5, 1)
+    hiHat.triggerAttackRelease(880, '32n', time + .75, 1)
   }
 
   function stopCycle () {}
 
   function rampBPM () {
-    console.log(cycle)
+    bpm +=.1
   }
 
   function paramzUp() {
