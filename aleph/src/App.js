@@ -21,7 +21,6 @@ function App () {
 
   let masterVolume = 1
   let cycle
-  let beatConductor = 0
   let rootTone
   let measure
   const gain = new Tone.Gain(masterVolume).toDestination()
@@ -40,6 +39,7 @@ function App () {
   const [unanswer, setUnanswer] = useState({})
   const [playerReady, setPlayerReady] = useState(false)
   const [playing, SetPlaying] = useState(false)
+  const [beatConductor, setBeatConductor] = useState(0)
   let controlPanel
 
   //----------main functions----------//
@@ -74,8 +74,7 @@ function App () {
     Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
-    beatConductor =
-      parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    setBeatConductor(parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length)
     measure = 60 / (unanswer.bpm / 4)
     console.log(beatConductor, Tone.Transport.position, measure)
     rootTone = unanswer.notes[beatConductor]

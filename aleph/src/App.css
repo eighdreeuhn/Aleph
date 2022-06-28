@@ -1,6 +1,6 @@
 .App {
   display: grid;
-  grid-template: 25% 50% 1fr/ auto;
+  grid-template: 50% 25% 1fr/ auto;
   text-align: center;
   background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
   background-repeat: no-repeat;

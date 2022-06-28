@@ -9,7 +9,7 @@ const Aleph = (props) => {
 
   let alephColor =
   !props.playing ?
-  'red' :
+  'white' :
   `rgba(${props.colors[bar][0]},
     ${props.colors[bar][1]},
     ${props.colors[bar][2]},
