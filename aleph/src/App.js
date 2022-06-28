@@ -4,16 +4,7 @@ import Aleph from './Components/Aleph'
 import Blip from './Components/Blip'
 import SearchForm from './Components/SearchForm'
 import './App.css'
-import {
-  AMSynth,
-  Context,
-  DuoSynth,
-  FatOscillator,
-  FMOscillator,
-  FMSynth,
-  Player,
-  Synth
-} from 'tone'
+import { AMSynth } from 'tone'
 
 //Main page
 //All logic takes place here
@@ -77,10 +68,12 @@ function App () {
 
   //Main player function//
   const play = function (time) {
-    Tone.Transport.bpm.exponentialRampTo(110, 1)
+    Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    if (beatConductor === 1) {
+    }
     rootNote = unanswer.notes[beatConductor]
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time, 1)
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.25, 1)
@@ -137,7 +130,10 @@ function App () {
 
   //Hashing function to distill inherent beats per minute from a string//
   const extractBPM = phrase =>
-    phrase.reduce((a, b) => a + b, 0)[0] / phrase.length
+    (phrase
+      .split('')
+      .map(l => l.charCodeAt(0))
+      .reduce((a, b) => a + b, 0) % 110) * 2
 
   //Search field change handler//
   const handlePhraseChange = e => setUnsearch(e.target.value)
@@ -148,9 +144,11 @@ function App () {
     if (unsearch.length !== 0) {
       const notes = interpolateNotes(unsearch)
       const colors = extractColors(unsearch)
+      const bpm = extractBPM(unsearch)
       let unanswerCopy = { ...unanswer }
       unanswerCopy.notes = notes
       unanswerCopy.colors = colors
+      unanswerCopy.bpm = bpm
       setUnanswer(unanswerCopy)
       setUnsearch('')
       setPlayerReady(true)
@@ -163,9 +161,8 @@ function App () {
     preBuild()
   }
 
-   
-    if (playing) {
-      controlPanel = 
+  if (playing) {
+    controlPanel = (
       <div>
         <button onClick={stopPlay}>Stopz!</button>
         <button onClick={rampUp}>Rampz!</button>
@@ -173,19 +170,21 @@ function App () {
         <button onClick={volUp}>Loudz!</button>
         <button onClick={VolDown}>Shhhz!!</button>
       </div>
-      //placeholder for playback controls//
-    } else {
-      controlPanel = 
-        <SearchForm
-          unsearch={unsearch}
-          utils={[handlePhraseChange, handlePhraseSubmit]}
-        />
-      
-    
+    )
+    //placeholder for playback controls//
+  } else {
+    controlPanel = (
+      <SearchForm
+        unsearch={unsearch}
+        utils={[handlePhraseChange, handlePhraseSubmit]}
+      />
+    )
   }
 
   //----------App rendering----------//
-  // console.log(`  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${bpm}`)
+  console.log(
+    `  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}`
+  )
   return (
     <div className='App'>
       <Aleph color={unanswer.colors} />
