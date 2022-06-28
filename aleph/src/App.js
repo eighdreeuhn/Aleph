@@ -10,6 +10,7 @@ import { AMSynth } from 'tone'
 //All logic takes place here
 
 function App () {
+
   //----------Global constants--------//
 
   const A = 2 ** (1 / 12)
@@ -161,6 +162,7 @@ function App () {
     preBuild()
   }
 
+  //Logic to determine appropriate control panel display//
   if (playing) {
     controlPanel = (
       <div>
@@ -171,7 +173,6 @@ function App () {
         <button onClick={VolDown}>Shhhz!!</button>
       </div>
     )
-    //placeholder for playback controls//
   } else {
     controlPanel = (
       <SearchForm
