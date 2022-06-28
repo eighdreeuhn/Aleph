@@ -24,7 +24,6 @@ function App () {
   let cycle
   let beatConductor
   let rootTone
-  let nextTone
   let measure
   const gain = new Tone.Gain(masterVolume).toDestination()
   const phaser = new Tone.FeedbackDelay('16n', 0.1).connect(gain)
@@ -77,21 +76,21 @@ function App () {
     //Get an index from the current measure relative to the total number of notes//
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-      measure = 60/(unanswer.bpm/4)
+    measure = 60/(unanswer.bpm/4)
     console.log(beatConductor, Tone.Transport.position, measure)
     rootTone = unanswer.notes[beatConductor]
-    nextTone = unanswer[(beatConductor + 1) % unanswer.notes.length]
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time, 1)
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.25, 1)
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.5, 1)
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.75, 1)
-    hiHat.triggerAttackRelease(rootTone, '16n', time + measure*0.75, 1)
+    hiHat.triggerAttackRelease(rootTone, '32n', time + measure*0.25, 1)
+    hiHat.triggerAttackRelease(rootTone, '32n', time + measure*0.30, 1)
     mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
     mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure*0.5, 1)
     mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 8, '8n', time + measure*0.75, 1)
-    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 4, '8n', time + measure*0.75, 1)
-    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 2, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 8, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 4, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure*0.75, 1)
   }
 
   const stopPlay = function () {
@@ -141,10 +140,12 @@ function App () {
       .map(l => l.charCodeAt(0))
       .reduce((a, b) => a + b, 0) % 110) * 2
     return (
+      rawBpm === 0 ?
+      120 :
       rawBpm < 50 ?
-      rawBpm * 3 :
+      rawBpm * 6 :
       rawBpm < 100 ?
-      rawBpm * 2 :
+      rawBpm * 3 :
       rawBpm
     )
   }
