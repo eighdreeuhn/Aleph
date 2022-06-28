@@ -20,8 +20,8 @@
   grid-template-rows: 1 / 2;
   animation: spin 10s linear infinite;
   fill: rgb(255, 255, 255);
-  width: 30%;
   margin-top: 20%;
+  transform: scale(25%);
   justify-self: center;
 }
 

@@ -11,7 +11,6 @@ import { AMSynth } from 'tone'
 //All logic takes place here
 
 function App () {
-
   //----------Global constants--------//
 
   const A = 2 ** (1 / 12)
@@ -22,7 +21,7 @@ function App () {
 
   let masterVolume = 1
   let cycle
-  let beatConductor
+  let beatConductor = 0
   let rootTone
   let measure
   const gain = new Tone.Gain(masterVolume).toDestination()
@@ -47,6 +46,7 @@ function App () {
 
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
+    SetPlaying(true)
     console.log(unanswer, playerReady)
     bassDrum = new Tone.MembraneSynth({
       attack: 0.1,
@@ -76,21 +76,56 @@ function App () {
     //Get an index from the current measure relative to the total number of notes//
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-    measure = 60/(unanswer.bpm/4)
+    measure = 60 / (unanswer.bpm / 4)
     console.log(beatConductor, Tone.Transport.position, measure)
     rootTone = unanswer.notes[beatConductor]
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time, 1)
-    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.25, 1)
-    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.5, 1)
-    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.75, 1)
-    hiHat.triggerAttackRelease(rootTone, '32n', time + measure*0.25, 1)
-    hiHat.triggerAttackRelease(rootTone, '32n', time + measure*0.30, 1)
+    bassDrum.triggerAttackRelease(
+      rootTone * 0.25,
+      '4n',
+      time + measure * 0.25,
+      1
+    )
+    bassDrum.triggerAttackRelease(
+      rootTone * 0.25,
+      '4n',
+      time + measure * 0.5,
+      1
+    )
+    bassDrum.triggerAttackRelease(
+      rootTone * 0.25,
+      '4n',
+      time + measure * 0.75,
+      1
+    )
+    hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.25, 1)
+    hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.3, 1)
     mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
-    mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure*0.5, 1)
+    mainVoice.triggerAttackRelease(
+      rootTone * A ** 7 * 4,
+      '4n',
+      time + measure * 0.5,
+      1
+    )
     mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 8, '8n', time + measure*0.75, 1)
-    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 4, '8n', time + measure*0.75, 1)
-    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(
+      rootTone * A ** 7 * 8,
+      '8n',
+      time + measure * 0.75,
+      1
+    )
+    harmonizer.triggerAttackRelease(
+      rootTone * A ** 7 * 4,
+      '8n',
+      time + measure * 0.75,
+      1
+    )
+    harmonizer.triggerAttackRelease(
+      rootTone * A ** 7 * 2,
+      '8n',
+      time + measure * 0.75,
+      1
+    )
   }
 
   const stopPlay = function () {
@@ -108,8 +143,8 @@ function App () {
 
   //Ramp dowm the bpm of the main loop//
   const rampDown = function () {
-   unanswer.bpm -= 5
-   console.log(unanswer.bpm)
+    unanswer.bpm -= 5
+    console.log(unanswer.bpm)
   }
 
   //Increment the master volume//
@@ -125,29 +160,53 @@ function App () {
   }
 
   //Hashing function for transforming character code into wavelength (hertz)//
-  //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
-  //the function: f(n) = f(0) * A^(n) (hz)
+    //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
+    //the function: f(n) = f(0) * A^(n) (hz)
   const interpolateNotes = phrase =>
     phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
 
   //Hashing function for transforming character codes into colors based on wavelength//
-  const extractColors = phrase => phrase.split('').map(l => l.charCodeAt(0))
+    //This is a pretty crazy way of accomplishing this, and I suspect that there's//
+    //a more elegant way of doing it using angles and the color wheel, but I've//
+    //already wasted enough time on this as it is//
+  const extractColors = phrase => {
+    return phrase
+      .split('')
+      .map(l => l.charCodeAt(0))
+      .map(c => [
+        Math.trunc(
+          Math.abs(
+            Math.sin(c)) * 255),
+        Math.trunc(
+          Math.abs(
+            Math.cos(c)) * 255),
+        Math.trunc(
+          Math.abs(
+            Math.floor(
+              Math.tan(c)) - Math.tan(c)) * 255),
+        Math.abs(
+          Math.floor(
+            Math.abs(Math.atan(c) ** Math.sin(c))) - Math.abs(Math.atan(c) ** Math.sin(c))
+        )
+      ])
+  }
 
   //Hashing function to distill inherent beats per minute from a string//
   const extractBPM = phrase => {
-    let rawBpm = (phrase
-      .split('')
-      .map(l => l.charCodeAt(0))
-      .reduce((a, b) => a + b, 0) % 110) * 2
-    return (
-      rawBpm === 0 ?
-      120 :
-      rawBpm < 50 ?
-      rawBpm * 6 :
-      rawBpm < 100 ?
-      rawBpm * 3 :
-      rawBpm
-    )
+    let rawBpm =
+      (phrase
+        .split('')
+        .map(l => l.charCodeAt(0))
+        .reduce((a, b) => a + b, 0) %
+        110) *
+      2
+    return rawBpm === 0
+      ? 120
+      : rawBpm < 50
+      ? rawBpm * 6
+      : rawBpm < 100
+      ? rawBpm * 3
+      : rawBpm
   }
 
   //Search field change handler//
@@ -202,11 +261,9 @@ function App () {
   )
   return (
     <div className='App'>
-      <Aleph color={unanswer.colors} />
-      <section className='control'>
-      {controlPanel}
-      </section>
-      <Footer/>
+      <Aleph playing={playing} bar={beatConductor} colors={unanswer.colors} />
+      <section className='control'>{controlPanel}</section>
+      <Footer />
     </div>
   )
 }
