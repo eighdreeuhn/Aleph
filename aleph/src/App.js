@@ -23,9 +23,11 @@ function App () {
   let masterVolume = 1
   let cycle
   let beatConductor
-  let rootNote
+  let rootTone
+  let nextTone
+  let measure
   const gain = new Tone.Gain(masterVolume).toDestination()
-  const phaser = new Tone.FeedbackDelay('8n', 0.1).connect(gain)
+  const phaser = new Tone.FeedbackDelay('16n', 0.1).connect(gain)
 
   //----------Instruments----------//
 
@@ -72,23 +74,24 @@ function App () {
   const play = function (time) {
     Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
+    //Get an index from the current measure relative to the total number of notes//
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-      console.log(beatConductor, Tone.Transport.position)
-    if (beatConductor) {
-    }
-    rootNote = unanswer.notes[beatConductor]
-    bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time, 1)
-    bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.25, 1)
-    bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.5, 1)
-    bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.75, 1)
-    hiHat.triggerAttackRelease(880, '16n', time + 0.75, 1)
-    mainVoice.triggerAttackRelease(rootNote, '4n', time, 2)
-    mainVoice.triggerAttackRelease(rootNote * A ** 7 * 4, '8n', time + 0.5, 1)
-    mainVoice.triggerAttackRelease(rootNote * 2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(rootNote * A ** 7 * 8, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(rootNote * A ** 7 * 4, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(rootNote * A ** 7 * 2, '8n', time + 0.75, 1)
+      measure = 60/(unanswer.bpm/4)
+    console.log(beatConductor, Tone.Transport.position, measure)
+    rootTone = unanswer.notes[beatConductor]
+    nextTone = unanswer[(beatConductor + 1) % unanswer.notes.length]
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time, 1)
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.25, 1)
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.5, 1)
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure*0.75, 1)
+    hiHat.triggerAttackRelease(rootTone, '16n', time + measure*0.75, 1)
+    mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
+    mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure*0.5, 1)
+    mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
+    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 8, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 4, '8n', time + measure*0.75, 1)
+    harmonizer.triggerAttackRelease(nextTone * A ** 7 * 2, '8n', time + measure*0.75, 1)
   }
 
   const stopPlay = function () {
@@ -132,11 +135,19 @@ function App () {
   const extractColors = phrase => phrase.split('').map(l => l.charCodeAt(0))
 
   //Hashing function to distill inherent beats per minute from a string//
-  const extractBPM = phrase =>
-    (phrase
+  const extractBPM = phrase => {
+    let rawBpm = (phrase
       .split('')
       .map(l => l.charCodeAt(0))
       .reduce((a, b) => a + b, 0) % 110) * 2
+    return (
+      rawBpm < 50 ?
+      rawBpm * 3 :
+      rawBpm < 100 ?
+      rawBpm * 2 :
+      rawBpm
+    )
+  }
 
   //Search field change handler//
   const handlePhraseChange = e => setUnsearch(e.target.value)
