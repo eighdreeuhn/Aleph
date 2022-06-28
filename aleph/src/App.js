@@ -82,7 +82,6 @@ function App () {
     beatConductor =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     rootNote = unanswer.notes[beatConductor]
-    console.log(rootNote)
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time, 1)
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.25, 1)
     bassDrum.triggerAttackRelease(rootNote * 0.25, '4n', time + 0.5, 1)
@@ -98,28 +97,36 @@ function App () {
 
   const stopPlay = function () {
     //need to research this
+
     SetPlaying(false)
     console.log("Haven't figured this out yet.")
   }
 
+  //Ramp up the bpm of the main loop//
   const rampUp = function () {
     // bpm += 5
     // console.log(bpm)
   }
+
+  //Ramp dowm the bpm of the main loop//
   const rampDown = function () {
     // bpm -= 5
     // console.log(bpm)
   }
+
+  //Increment the master volume//
   const volUp = function () {
     masterVolume = Math.abs((masterVolume += 0.1))
     console.log(masterVolume)
   }
+
+  //Decrement the master volume//
   const VolDown = function () {
     masterVolume = Math.abs((masterVolume -= 0.1))
     console.log(masterVolume)
   }
 
-  //Hashing function for transforming character codes into wavelengths in hertz//
+  //Hashing function for transforming character code into wavelength (hertz)//
   //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
   //the function: f(n) = f(0) * A^(n) (hz)
   const interpolateNotes = phrase =>
