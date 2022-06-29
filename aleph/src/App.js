@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
 import * as Tone from 'tone'
 import Aleph from './Components/Aleph'
 import Blip from './Components/Blip'
@@ -7,19 +7,19 @@ import Footer from './Components/Footer'
 import './App.css'
 import { AMSynth } from 'tone'
 
+//----------Global constants--------//
+let masterVolume = 1
+const A = 2 ** (1 / 12)
+const ROOT = 55
+let load = false
+
 //Main page
 //All logic takes place here
 
 function App () {
-  //----------Global constants--------//
-
-  const A = 2 ** (1 / 12)
-  const ROOT = 55
-  let load = false
 
   //----------Wiring network----------//
 
-  let masterVolume = 1
   let cycle
   let rootTone
   let measure
@@ -38,15 +38,17 @@ function App () {
   const [unsearch, setUnsearch] = useState('')
   const [unanswer, setUnanswer] = useState({})
   const [playerReady, setPlayerReady] = useState(false)
-  const [playing, SetPlaying] = useState(false)
+  const [playing, setPlaying] = useState(false)
   const [beatConductor, setBeatConductor] = useState(0)
   let controlPanel
+  let counter = 0
 
   //----------main functions----------//
 
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
-    SetPlaying(true)
+    setPlaying(true)
+    setBeatConductor(0)
     console.log(unanswer, playerReady)
     bassDrum = new Tone.MembraneSynth({
       attack: 0.1,
@@ -76,61 +78,28 @@ function App () {
     //Get an index from the current measure relative to the total number of notes//
     setBeatConductor(parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length)
     measure = 60 / (unanswer.bpm / 4)
-    console.log(beatConductor, Tone.Transport.position, measure)
-    rootTone = unanswer.notes[beatConductor]
+    counter = parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    console.log(`App.js value for counter: ${counter}, Transfer popsition: ${Tone.Transport.position}, Measure duration: ${measure}`)
+    rootTone = unanswer.notes[counter]
     bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time, 1)
-    bassDrum.triggerAttackRelease(
-      rootTone * 0.25,
-      '4n',
-      time + measure * 0.25,
-      1
-    )
-    bassDrum.triggerAttackRelease(
-      rootTone * 0.25,
-      '4n',
-      time + measure * 0.5,
-      1
-    )
-    bassDrum.triggerAttackRelease(
-      rootTone * 0.25,
-      '4n',
-      time + measure * 0.75,
-      1
-    )
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.25, 1)
+    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.5, 1)
+    bassDrum.triggerAttackRelease(rootTone * 0.25,'4n', time + measure * 0.75, 1)
     hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.25, 1)
     hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.3, 1)
     mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
-    mainVoice.triggerAttackRelease(
-      rootTone * A ** 7 * 4,
-      '4n',
-      time + measure * 0.5,
-      1
-    )
+    mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure * 0.5, 1)
     mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
-    harmonizer.triggerAttackRelease(
-      rootTone * A ** 7 * 8,
-      '8n',
-      time + measure * 0.75,
-      1
-    )
-    harmonizer.triggerAttackRelease(
-      rootTone * A ** 7 * 4,
-      '8n',
-      time + measure * 0.75,
-      1
-    )
-    harmonizer.triggerAttackRelease(
-      rootTone * A ** 7 * 2,
-      '8n',
-      time + measure * 0.75,
-      1
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 8, '8n',  time + measure * 0.75, 1)
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 4, '8n', time + measure * 0.75, 1)
+    harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure * 0.75, 1
     )
   }
 
   const stopPlay = function () {
     //need to research this
 
-    SetPlaying(false)
+    setPlaying(false)
     console.log("Haven't figured this out yet.")
   }
 
@@ -225,7 +194,7 @@ function App () {
       setUnanswer(unanswerCopy)
       setUnsearch('')
       setPlayerReady(true)
-      SetPlaying(true)
+      setPlaying(true)
     }
   }
 
@@ -256,7 +225,7 @@ function App () {
 
   //----------App rendering----------//
   console.log(
-    `  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}`
+    `  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar:${Tone.Transport.position}`
   )
   return (
     <div className='App'>

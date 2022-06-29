@@ -21,12 +21,11 @@
   animation: spin 10s linear infinite;
   fill: rgb(255, 255, 255);
   margin-top: 20%;
-  transform: scale(25%);
   justify-self: center;
 }
 
 .search-field {
-  grid-template-rows: 2 / 3;
+  grid-row: 1;
   text-align: center;
   width: 50%;
   height: 10%;
@@ -42,4 +41,9 @@ button {
 
 .control {
   margin-bottom: 25%;
+  margin-top: 20%;
+}
+
+.footer {
+  grid-row: 3 / 4;
 }
