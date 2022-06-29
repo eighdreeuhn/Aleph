@@ -29,11 +29,12 @@
   text-align: center;
   width: 50%;
   height: 10%;
-  margin-top: 10em;
+  margin-top: 10%;
+  margin-bottom: 10%;
 }
 
 button {
-  width: 50px;
+  width: auto;
   height: 50px;
   margin: 5px;
   border-radius: 5px;

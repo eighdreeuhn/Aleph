@@ -21,8 +21,8 @@ function App () {
   let cycle
   let rootTone
   let measure
-  const gain = new Tone.Gain(masterVolume).toDestination()
-  const phaser = new Tone.AutoFilter('32n').connect(gain)
+  const gain = new Tone.Gain(masterVolume)
+  const phaser = new Tone.BiquadFilter()
 
   //----------Instruments----------//
 
@@ -45,7 +45,8 @@ function App () {
 
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
-    // setBeatConductor(0)
+    gain.toDestination()
+    phaser.connect(gain)
     setPlaying(true)
     setPlayerReady(false)
     console.log(unanswer)
@@ -58,16 +59,25 @@ function App () {
     hiHat = new Tone.MetalSynth({
       attack: 0.1,
       sustain: 0.3,
-      delay: 0.1,
+      delay: 0.25,
       release: 0.5
     }).connect(phaser)
     mainVoice = new Tone.PolySynth(Tone.AMSynth).connect(phaser)
     harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
-    // console.log(harmonizer)
     cycle = new Tone.Loop(play, '1m')
-    Tone.start()
     Tone.Transport.start()
     cycle.start()
+  }
+
+//Strikes a major chord
+  const chord = function() {
+    mainVoice.triggerAttackRelease(rootTone, '1m')
+    mainVoice.triggerAttackRelease(rootTone * (A ** 7), '1m')
+    mainVoice.triggerAttackRelease(rootTone * (A ** 4), '1m')
+  }
+
+  const arpeggiator = function() {
+
   }
 
   //Main player function//
@@ -78,14 +88,17 @@ function App () {
     setBeatConductor(parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length)
     measure = 60 / (unanswer.bpm / 4)
     counter = parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-    console.log(`App.js value for counter: ${counter}, Transfer popsition: ${Tone.Transport.position}, Measure duration: ${measure}`)
+    console.log(`App.js value for counter: ${counter}, Transfer position: ${Tone.Transport.position}, Measure duration: ${measure}`)
     rootTone = unanswer.notes[counter]
-    bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time, 1)
+    bassDrum.triggerAttackRelease(55, '8n', time, 1)
+    bassDrum.triggerAttackRelease(55, '8n', time + 0.25, 1)
+    bassDrum.triggerAttackRelease(55, '8n', time + 0.5, 1)
+    hiHat.triggerAttackRelease(440, '16n', time + 0.25, 2)
+    hiHat.triggerAttackRelease(440, '16n', time +  0.3, 2)
+    chord()
     // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.25, 1)
     // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.5, 1)
     // bassDrum.triggerAttackRelease(rootTone * 0.25,'4n', time + measure * 0.75, 1)
-    // hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.25, 1)
-    // hiHat.triggerAttackRelease(rootTone, '32n', time + measure * 0.3, 1)
     // mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
     // mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure * 0.5, 1)
     // mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
@@ -97,9 +110,9 @@ function App () {
 
   const stopPlay = function () {
     //need to research this
-
+    gain.disconnect()
+    Tone.Transport.stop()
     setPlaying(false)
-    console.log("Haven't figured this out yet.")
   }
 
   //Ramp up the bpm of the main loop//
