@@ -1,8 +1,8 @@
 const Blip = (props) => {
     return (
-        <div className={props}>
-
-        </div>
+       <svg
+       src='./resources/elipse'
+       ></svg>
     )
 }
 

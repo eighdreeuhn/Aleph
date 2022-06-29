@@ -1,7 +1,5 @@
 const Aleph = (props) => {
   
-  console.log(`Aleph component's value for beatConductor: ${props.bar}`)
-
   let bar =
   !props.playing ?
   0 :

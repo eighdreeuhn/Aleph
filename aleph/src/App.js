@@ -21,13 +21,22 @@ function App () {
   let cycle
   let rootTone
   let measure
+  let whole
+  let half
+  let quarter
+  let eigth
+  let sixt
+  let thirty2nd
   const gain = new Tone.Gain(masterVolume)
-  const phaser = new Tone.BiquadFilter()
+  const phaser = new Tone.Compressor()
+  const lowPass = new Tone.Mono()
 
   //----------Instruments----------//
 
   let bassDrum
+  let snareDrum
   let hiHat
+  let bass
   let mainVoice
   let harmonizer
 
@@ -43,26 +52,64 @@ function App () {
 
   //----------main functions----------//
 
+  //Controller for blip rendering//
+  const blipz = function() {
+
+  }
+
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
     gain.toDestination()
     phaser.connect(gain)
+    lowPass.connect(gain)
     setPlaying(true)
     setPlayerReady(false)
+    Tone.Transport.bpm.value = unanswer.bpm
+    measure = 60 / (unanswer.bpm / 4)
+    half = measure/2
+    quarter = measure/4
+    eigth = measure/8
+    sixt = measure/16
+    thirty2nd = measure/32
     console.log(unanswer)
+
     bassDrum = new Tone.MembraneSynth({
+      oscillator: {
+        type: "sine"
+      },
       attack: 0.1,
       sustain: 0.3,
       delay: 0.25,
-      release: 0.5
+      release: 0.1
     }).connect(phaser)
+
+    bass = new Tone.Synth({
+      oscillator : {
+        type : "sine"
+      }
+    }).connect(lowPass)
+
+    snareDrum = new Tone.NoiseSynth({
+      volume: 3,
+      noise: {
+        type: 'white',
+        playbackRate: 3,
+      },
+      envelope: {
+        attack: 0.01,
+        decay: 0.20,
+        sustain: 0.2,
+        release: 0.1,
+      },
+    }).connect(lowPass)
+
     hiHat = new Tone.MetalSynth({
       attack: 0.1,
       sustain: 0.3,
       delay: 0.25,
-      release: 0.5
+      release: 0.1
     }).connect(phaser)
-    mainVoice = new Tone.PolySynth(Tone.AMSynth).connect(phaser)
+    mainVoice = new Tone.PolySynth(Tone.Synth).connect(phaser)
     harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
     cycle = new Tone.Loop(play, '1m')
     Tone.Transport.start()
@@ -71,9 +118,9 @@ function App () {
 
 //Strikes a major chord
   const chord = function() {
-    mainVoice.triggerAttackRelease(rootTone, '1m')
-    mainVoice.triggerAttackRelease(rootTone * (A ** 7), '1m')
-    mainVoice.triggerAttackRelease(rootTone * (A ** 4), '1m')
+    mainVoice.triggerAttackRelease(rootTone, '2n')
+    mainVoice.triggerAttackRelease(rootTone * (A ** 7), '2n')
+    mainVoice.triggerAttackRelease(rootTone * (A ** 4), '2n')
   }
 
   const arpeggiator = function() {
@@ -86,16 +133,38 @@ function App () {
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
     setBeatConductor(parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length)
-    measure = 60 / (unanswer.bpm / 4)
     counter = parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-    console.log(`App.js value for counter: ${counter}, Transfer position: ${Tone.Transport.position}, Measure duration: ${measure}`)
+    console.log(`Current time: ${time}, Transfer position: ${Tone.Transport.position}, Measure duration: ${measure}`)
     rootTone = unanswer.notes[counter]
-    bassDrum.triggerAttackRelease(55, '8n', time, 1)
-    bassDrum.triggerAttackRelease(55, '8n', time + 0.25, 1)
-    bassDrum.triggerAttackRelease(55, '8n', time + 0.5, 1)
-    hiHat.triggerAttackRelease(440, '16n', time + 0.25, 2)
-    hiHat.triggerAttackRelease(440, '16n', time +  0.3, 2)
-    chord()
+    //Percussion line//
+    if (counter % 2 == 0) {
+      bassDrum.triggerAttackRelease(22, '4n')
+      bassDrum.triggerAttackRelease(22, '4n', `+${quarter + eigth}`)
+      bassDrum.triggerAttackRelease(22, '4n', `+${half}`)
+      bassDrum.triggerAttackRelease(22, '4n', `+${half + quarter}`)
+      snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
+      // bassDrum.triggerAttackRelease(22, '4n')
+      // bassDrum.triggerAttackRelease(22, '4n')
+      // hiHat.triggerAttackRelease(440, '16n', `+${quarter}`, 2)
+      // hiHat.triggerAttackRelease(440, '16n', `+${half}`, 2)
+    } else if (counter % 2 == 1) {
+      bassDrum.triggerAttackRelease(22, '4n')
+      bassDrum.triggerAttackRelease(22, '4n', `+${quarter}`)
+      bassDrum.triggerAttackRelease(22, '4n', `+${half}`)
+      bassDrum.triggerAttackRelease(22, '4n', `+${half + quarter}`)
+      snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
+      snareDrum.triggerAttackRelease('16n', `+${half + eigth+ sixt}`)
+    }
+
+    // bassDrum.triggerAttackRelease(22, '4n', time + half + quarter + eigth)
+    // bassDrum.triggerAttackRelease(22, '4n', '+.75')
+    // bassDrum.triggerAttackRelease(22, '4n', '+1')
+    // bassDrum.triggerAttackRelease(55, '8n', time + 0.5, 1)
+    // hiHat.triggerAttackRelease(440, '16n', time + 0.25, 2)
+    // chord()
+    // bass.triggerAttackRelease(rootTone/2*(A**-1), '8n')
+    // bass.triggerAttackRelease(rootTone/2, '8n', `+${sixt}`)
+    // bass.triggerAttackRelease(rootTone/2, '8n', time + eigth)
     // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.25, 1)
     // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.5, 1)
     // bassDrum.triggerAttackRelease(rootTone * 0.25,'4n', time + measure * 0.75, 1)
@@ -104,8 +173,7 @@ function App () {
     // mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
     // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 8, '8n',  time + measure * 0.75, 1)
     // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 4, '8n', time + measure * 0.75, 1)
-    // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure * 0.75, 1
-    // )
+    // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure * 0.75, 1)
   }
 
   const stopPlay = function () {
@@ -118,25 +186,23 @@ function App () {
   //Ramp up the bpm of the main loop//
   const rampUp = function () {
     unanswer.bpm += 5
-    console.log(unanswer.bpm)
+    Tone.Transport.bpm.linearRampTo(unanswer.bpm, 1)
   }
 
   //Ramp dowm the bpm of the main loop//
   const rampDown = function () {
     unanswer.bpm -= 5
-    console.log(unanswer.bpm)
+    Tone.Transport.bpm.linearRampTo(unanswer.bpm, 1)
   }
 
   //Increment the master volume//
   const volUp = function () {
     masterVolume = Math.abs((masterVolume += 0.1))
-    console.log(masterVolume)
   }
 
   //Decrement the master volume//
   const VolDown = function () {
     masterVolume = Math.abs((masterVolume -= 0.1))
-    console.log(masterVolume)
   }
 
   //Hashing function for transforming character code into wavelength (hertz)//
@@ -211,11 +277,6 @@ function App () {
     }
   }
 
-  // if (playerReady) {
-  //   setPlayerReady(false)
-  //   preBuild()
-  // }
-
   //Logic to determine appropriate control panel display//
   if (playerReady) {
       controlPanel = <button onClick={preBuild}>Unanswer</button>
@@ -240,10 +301,11 @@ function App () {
 
   //----------App rendering----------//
   console.log(
-    `  Playing: ${playing}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
+    `  Playing: ${Tone.Transport.state}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
   )
   return (
     <div className='App'>
+
       <Aleph playing={playing} bar={beatConductor} colors={unanswer.colors} />
       <section className='control'>{controlPanel}</section>
       <Footer />
