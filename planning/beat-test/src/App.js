@@ -12,18 +12,18 @@ function App () {
   function preBuild () {
     bassDrum = new Tone.MembraneSynth().connect(preGain)
     hiHat = new Tone.MetalSynth().connect(preGain)
-    cycle = new Tone.Loop(beats, bpm)
-    console.log(cycle)
-    Tone.Transport.start()
+    cycle = new Tone.Loop(beats, '4n')
     Tone.start()
+    Tone.Transport.start()
     cycle.start(0)
   }
 
   function beats (time) {
+    console.log(time)
     preGain.gain.rampTo(gain, 0.25)
     bassDrum.triggerAttackRelease(50, '16n', time, 2)
-    hiHat.triggerAttackRelease(880, '32n', time + 0.5, 1)
-    hiHat.triggerAttackRelease(880, '32n', time + .75, 1)
+    hiHat.triggerAttackRelease(880, '32n', time + 1, 1)
+    // hiHat.triggerAttackRelease(880, '32n', time + .75, 1)
   }
 
   function stopCycle () {}
