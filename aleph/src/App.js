@@ -72,6 +72,7 @@ function App () {
     thirty2nd = measure / 32
     console.log(unanswer)
 
+    //Instruments set-up//
     bassDrum = new Tone.MembraneSynth({
       oscillator: {
         type: 'sine'
@@ -137,6 +138,7 @@ function App () {
     cycle.start()
   }
 
+  //Creates a range of playble notes based on the root tone passed as argument//
   const generatePalette = tone => {
     let palette = []
     for (let i = 0; i <= 4; i += 2) {
@@ -220,6 +222,7 @@ function App () {
     }
   }
 
+  //Plays a windchime simulation with minimalistic beat accompaniment//
   const ambientChimes = function (time) {
     gain.gain.rampTo(masterVolume, 0.25)
     setBeatConductor(
@@ -233,18 +236,12 @@ function App () {
     bassDrum.triggerAttackRelease('A2', '8n', `+${half + quarter}`)
     palette.forEach((note, i) => {
       chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
-      // drumz.triggerAttackRelease('D1', 0.1, now + (2 * i + 1), 4)
-      // poly.triggerAttackRelease(note, 1, now + (2 * i), 2)
-      // poly.triggerAttackRelease(note * 8, 1, now + (2 * i), 2)
-      // poly.triggerAttackRelease(note * 0.5, 1, now + (2 * i), 2)
-      // poly.triggerAttackRelease(note * 0.25, 1, now + (2 * i), 2)
-      // poly.triggerAttackRelease(note * (a ** 19), 1, now + (2 * i), 2)
     })
-    // drumz.triggerAttackRelease('A1', '16n', '+1')
   }
 
+  //Stop playback and clear Transport values//
   const stopPlay = function () {
-    //need to research this
+    //need to research this more
     Tone.Transport.stop()
     Tone.Transport.cancel()
     setPlaying(false)
@@ -334,8 +331,8 @@ function App () {
     controlPanel = (
       <div>
         <button onClick={stopPlay}>Stopz!</button>
-        <button onClick={rampUp}>Rampz!</button>
-        <button onClick={rampDown}>Slowz!</button>
+        {/* <button onClick={rampUp}>Rampz!</button> */}
+        {/* <button onClick={rampDown}>Slowz!</button> */}
         <button onClick={volUp}>Loudz!</button>
         <button onClick={VolDown}>Shhhz!!</button>
       </div>
