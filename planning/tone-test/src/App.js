@@ -16,9 +16,24 @@ function App () {
   let load = true
   
   const playBoi = new Tone.Compressor(-50, 5).toDestination()
+  const poly = new Tone.PolySynth(Tone.Synth, {
+    oscillator : {
+      volume: 5,
+      count: 3,
+      spread: 40,
+      type : "fatsawtooth"
+    }
+  }).connect(playBoi)
+
+  const bass = new Tone.Synth({
+    oscillator : {
+      type : "triangle"
+    }
+  }).connect(playBoi)
+
 
   const stopPlay = function() {
-    playBoi.disconnect()
+    Tone.Transport.stop()
   }
 
   const interpolateNotes = (phrase) => {
@@ -52,16 +67,17 @@ function App () {
   const play = (notes) => {
     if (load === true) {
       const now = Tone.now()
-      const poly = new Tone.PolySynth(Tone.Synth).connect(playBoi)
+      // const poly = new Tone.PolySynth(Tone.Synth).connect(playBoi)
       // const drumz = new Tone.PolySynth(Tone.NoiseSynth).connect(playBoi)
       notes.forEach((note, i) => {
+        bass.triggerAttackRelease(note, '8n')
         // drumz.triggerAttackRelease('A1', 0.1, now + (2 * i), 5)
         // drumz.triggerAttackRelease('D1', 0.1, now + (2 * i + 1), 4)
-        poly.triggerAttackRelease(note, 1, now + (2 * i), 2)
-        poly.triggerAttackRelease(note * 8, 1, now + (2 * i), 2)
-        poly.triggerAttackRelease(note * 0.5, 1, now + (2 * i), 2)
-        poly.triggerAttackRelease(note * 0.25, 1, now + (2 * i), 2)
-        poly.triggerAttackRelease(note * (a ** 19), 1, now + (2 * i), 2)
+        // poly.triggerAttackRelease(note, 1, now + (2 * i), 2)
+        // poly.triggerAttackRelease(note * 8, 1, now + (2 * i), 2)
+        // poly.triggerAttackRelease(note * 0.5, 1, now + (2 * i), 2)
+        // poly.triggerAttackRelease(note * 0.25, 1, now + (2 * i), 2)
+        // poly.triggerAttackRelease(note * (a ** 19), 1, now + (2 * i), 2)
       })
     }
   }
