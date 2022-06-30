@@ -2,10 +2,26 @@ import * as Tone from 'tone'
 import './App.css'
 
 function App () {
+
   let cycle
   let bassDrum
   let crash
-  
+  let hiHat
+  let bassGuitar
+
+  let bpm = 1
+  let gain = 1
+
+  const preGain = new Tone.Gain(gain).toDestination()
+  const fx = new Tone.Phaser(
+    {
+      baseFrequency: 4000,
+      blockTime: 0.05,
+      octaves: 5
+
+    }
+  )
+
   crash = new Tone.MetalSynth({
     frequency: 500,
     envelope: {
@@ -15,31 +31,44 @@ function App () {
     },
     harmonicity: 4
   })
-    let hiHat
-    let bpm = 1
-    let gain = 1
-    const preGain = new Tone.Gain(gain).toDestination()
-    
-    function preBuild () {
-    bassDrum = new Tone.MembraneSynth().connect(preGain)
+
+  bassDrum = new Tone.MembraneSynth({
+  })
+
+  bassGuitar = new Tone.Synth(
+    {
+      envelope: {
+        attack: 0.15,
+        sustain: 0.2,
+        delay: 0.1,
+        release: 0.25,
+        releaseCurve: 'ripple',
+        attackCurve: 'sine'
+      }
+    }
+  )
+
+  function preBuild () {
+    fx.connect(preGain)
+    bassDrum.connect(preGain)
+    bassGuitar.connect(fx)
     hiHat = new Tone.MetalSynth().connect(preGain)
     crash.connect(preGain)
     cycle = new Tone.Loop(beats, '1m')
-    // Tone.start()
     Tone.Transport.start()
-    cycle.start(0)
+    cycle.start()
   }
 
   function beats (time) {
-    console.log(time, Tone.Transport.bpm.value)
-    // preGain.gain.rampTo(gain, 0.25)
-    // bassDrum.triggerAttackRelease(50, '16n', time, 2)
-    // hiHat.triggerAttackRelease(880, '32n', time + 1, 1)
-    // // hiHat.triggerAttackRelease(880, '32n', time + .75, 1)
-    crash.triggerAttackRelease(880, '4n', time)
-    crash.triggerAttackRelease(880, '4n', time + .5)
-    crash.triggerAttackRelease(880, '4n', time + 1)
-    crash.triggerAttackRelease(880, '4n', time + 1.5)
+    console.log(time, Tone.Transport.position)
+    bassDrum.triggerAttackRelease(55, '8n', time)
+    bassGuitar.triggerAttackRelease(55, '8n', time)
+    bassDrum.triggerAttackRelease(55, '8n', time + 0.5)
+    bassGuitar.triggerAttackRelease(110, '8n', time + 0.5)
+    bassDrum.triggerAttackRelease(55, '8n', time + 1)
+    bassGuitar.triggerAttackRelease(55, '8n', time + 1)
+    bassDrum.triggerAttackRelease(55, '8n', time + 1.5)
+    bassGuitar.triggerAttackRelease(110, '8n', time + 1.5)
   }
 
   function stopCycle () {
@@ -49,18 +78,18 @@ function App () {
   }
 
   function rampBPM () {
-    bpm +=.1
+    Tone.Transport.bpm.linearRampTo(240, 1)
   }
 
-  function paramzUp() {
+  function paramzUp () {
     console.log(preGain.gain)
-    gain += 0.1
+    preGain.gain.linearRampTo(2, 1)
     console.log(gain)
   }
 
-  function paramzDown() {
+  function paramzDown () {
     console.log(preGain.gain)
-    gain -= 0.25
+    preGain.gain.linearRampTo(1, 1)
     console.log(gain)
   }
 
