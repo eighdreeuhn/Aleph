@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/Aleph/static/css/main.49c57d70.css",
-    "main.js": "/Aleph/static/js/main.f6ae237c.js",
+    "main.css": "/Aleph/static/css/main.0d6cd4a3.css",
+    "main.js": "/Aleph/static/js/main.c70f2d7d.js",
     "static/js/787.ae89a97c.chunk.js": "/Aleph/static/js/787.ae89a97c.chunk.js",
     "static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg": "/Aleph/static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.153ad5bddaf2bf97a687.jpeg",
     "index.html": "/Aleph/index.html",
-    "main.49c57d70.css.map": "/Aleph/static/css/main.49c57d70.css.map",
-    "main.f6ae237c.js.map": "/Aleph/static/js/main.f6ae237c.js.map",
+    "main.0d6cd4a3.css.map": "/Aleph/static/css/main.0d6cd4a3.css.map",
+    "main.c70f2d7d.js.map": "/Aleph/static/js/main.c70f2d7d.js.map",
     "787.ae89a97c.chunk.js.map": "/Aleph/static/js/787.ae89a97c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.49c57d70.css",
-    "static/js/main.f6ae237c.js"
+    "static/css/main.0d6cd4a3.css",
+    "static/js/main.c70f2d7d.js"
   ]
 }
