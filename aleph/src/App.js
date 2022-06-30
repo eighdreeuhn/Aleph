@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import * as Tone from 'tone'
 import Aleph from './Components/Aleph'
 import Blip from './Components/Blip'
@@ -15,7 +15,6 @@ const ROOT = 55
 //All logic takes place here
 
 function App () {
-
   //----------Wiring network----------//
 
   let cycle
@@ -36,7 +35,9 @@ function App () {
   let bassDrum
   let snareDrum
   let hiHat
+  let crash
   let bass
+  let mainCoreVoice
   let mainVoice
   let harmonizer
 
@@ -53,9 +54,7 @@ function App () {
   //----------main functions----------//
 
   //Controller for blip rendering//
-  const blipz = function() {
-
-  }
+  const blipz = function () {}
 
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
@@ -64,18 +63,17 @@ function App () {
     lowPass.connect(gain)
     setPlaying(true)
     setPlayerReady(false)
-    Tone.Transport.bpm.value = unanswer.bpm
     measure = 60 / (unanswer.bpm / 4)
-    half = measure/2
-    quarter = measure/4
-    eigth = measure/8
-    sixt = measure/16
-    thirty2nd = measure/32
+    half = measure / 2
+    quarter = measure / 4
+    eigth = measure / 8
+    sixt = measure / 16
+    thirty2nd = measure / 32
     console.log(unanswer)
 
     bassDrum = new Tone.MembraneSynth({
       oscillator: {
-        type: "sine"
+        type: 'sine'
       },
       attack: 0.1,
       sustain: 0.3,
@@ -84,8 +82,8 @@ function App () {
     }).connect(phaser)
 
     bass = new Tone.Synth({
-      oscillator : {
-        type : "sine"
+      oscillator: {
+        type: 'sine'
       }
     }).connect(lowPass)
 
@@ -93,22 +91,44 @@ function App () {
       volume: 3,
       noise: {
         type: 'white',
-        playbackRate: 3,
+        playbackRate: 3
       },
       envelope: {
         attack: 0.01,
-        decay: 0.20,
+        decay: 0.2,
         sustain: 0.2,
-        release: 0.1,
-      },
+        release: 0.1
+      }
     }).connect(lowPass)
 
     hiHat = new Tone.MetalSynth({
-      attack: 0.1,
-      sustain: 0.3,
-      delay: 0.25,
-      release: 0.1
+      envelope: {
+        attack: 0.1,
+        sustain: 0.1,
+        delay: 0.3,
+        release: 0.2
+      }
     }).connect(phaser)
+
+    crash = new Tone.MetalSynth({
+      frequency: 500,
+      envelope: {
+        attack: 0.1,
+        sustain: 0.25,
+        delay: 0.3
+      },
+      harmonicity: 5
+    }).connect(phaser)
+
+    mainCoreVoice = new Tone.Synth({
+      envelope: {
+        attack: 0.25,
+        sustain: 0.25,
+        delay: 0.1,
+        release: 0.25
+      }
+    })
+
     mainVoice = new Tone.PolySynth(Tone.Synth).connect(phaser)
     harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
     cycle = new Tone.Loop(play, '1m')
@@ -116,44 +136,57 @@ function App () {
     cycle.start()
   }
 
-//Strikes a major chord
-  const chord = function() {
+  //Strikes a major chord
+  const chord = function () {
+    mainVoice.triggerAttackRelease(rootTone / 2, '2n')
+    mainVoice.triggerAttackRelease(rootTone / 4, '2n')
+    mainVoice.triggerAttackRelease(rootTone / 8, '2n')
     mainVoice.triggerAttackRelease(rootTone, '2n')
-    mainVoice.triggerAttackRelease(rootTone * (A ** 7), '2n')
-    mainVoice.triggerAttackRelease(rootTone * (A ** 4), '2n')
+    mainVoice.triggerAttackRelease(rootTone * A ** 7, '2n')
+    mainVoice.triggerAttackRelease(rootTone * A ** 4, '2n')
   }
 
-  const arpeggiator = function() {
-
-  }
+  const arpeggiator = function () {}
 
   //Main player function//
   const play = function (time) {
-    // Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
+    Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
-    setBeatConductor(parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length)
-    counter = parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
-    console.log(`Current time: ${time}, Transfer position: ${Tone.Transport.position}, Measure duration: ${measure}`)
+    setBeatConductor(
+      parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    )
+    counter =
+      parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    console.log(
+      `Current counter: ${counter}\n\n  Current time: ${time}\n\n Transfer position: ${Tone.Transport.position}\n\n Measure duration: ${measure}`
+    )
     rootTone = unanswer.notes[counter]
     //Percussion line//
     if (counter % 2 == 0) {
-      bassDrum.triggerAttackRelease(22, '4n')
-      bassDrum.triggerAttackRelease(22, '4n', `+${quarter + eigth}`)
-      bassDrum.triggerAttackRelease(22, '4n', `+${half}`)
-      bassDrum.triggerAttackRelease(22, '4n', `+${half + quarter}`)
-      snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
+      chord()
+      bassDrum.triggerAttackRelease(55, '4n')
+      hiHat.triggerAttackRelease(880, '16n')
+      snareDrum.triggerAttackRelease('16n', `+${half}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${half + eigth}`)
+      bassDrum.triggerAttackRelease(55, '4n', `+${quarter + eigth}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${half + quarter}`)
+      bassDrum.triggerAttackRelease(55, '4n', `+${half}`)
+      bassDrum.triggerAttackRelease(55, '4n', `+${half + quarter + eigth}`)
+      // snareDrum.triggerAttackRelease('16n', `+${ eigth}`)
       // bassDrum.triggerAttackRelease(22, '4n')
       // bassDrum.triggerAttackRelease(22, '4n')
-      // hiHat.triggerAttackRelease(440, '16n', `+${quarter}`, 2)
       // hiHat.triggerAttackRelease(440, '16n', `+${half}`, 2)
     } else if (counter % 2 == 1) {
-      bassDrum.triggerAttackRelease(22, '4n')
-      bassDrum.triggerAttackRelease(22, '4n', `+${quarter}`)
-      bassDrum.triggerAttackRelease(22, '4n', `+${half}`)
-      bassDrum.triggerAttackRelease(22, '4n', `+${half + quarter}`)
-      snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
-      snareDrum.triggerAttackRelease('16n', `+${half + eigth+ sixt}`)
+      chord()
+      hiHat.triggerAttackRelease(880, '16n')
+      bassDrum.triggerAttackRelease(55, '4n')
+      bassDrum.triggerAttackRelease(55, '4n', `+${quarter}`)
+      // bassDrum.triggerAttackRelease(55, '4n', `+${quarter + sixt}`)
+      bassDrum.triggerAttackRelease(55, '4n', `+${quarter + eigth}`)
+      crash.triggerAttackRelease('4n')
+      // snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
+      // snareDrum.triggerAttackRelease('16n', `+${half + eigth+ sixt}`)
     }
 
     // bassDrum.triggerAttackRelease(22, '4n', time + half + quarter + eigth)
@@ -161,7 +194,6 @@ function App () {
     // bassDrum.triggerAttackRelease(22, '4n', '+1')
     // bassDrum.triggerAttackRelease(55, '8n', time + 0.5, 1)
     // hiHat.triggerAttackRelease(440, '16n', time + 0.25, 2)
-    // chord()
     // bass.triggerAttackRelease(rootTone/2*(A**-1), '8n')
     // bass.triggerAttackRelease(rootTone/2, '8n', `+${sixt}`)
     // bass.triggerAttackRelease(rootTone/2, '8n', time + eigth)
@@ -206,33 +238,26 @@ function App () {
   }
 
   //Hashing function for transforming character code into wavelength (hertz)//
-    //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
-    //the function: f(n) = f(0) * A^(n) (hz)
+  //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
+  //the function: f(n) = f(0) * A^(n) (hz)
   const interpolateNotes = phrase =>
     phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
 
   //Hashing function for transforming character codes into colors based on wavelength//
-    //This is a pretty crazy way of accomplishing this, and I suspect that there's//
-    //a more elegant way of doing it using angles and the color wheel, but I've//
-    //already wasted enough time on this as it is//
+  //This is a pretty crazy way of accomplishing this, and I suspect that there's//
+  //a more elegant way of doing it using angles and the color wheel, but I've//
+  //already wasted enough time on this as it is//
   const extractColors = phrase => {
     return phrase
       .split('')
       .map(l => l.charCodeAt(0))
       .map(c => [
-        Math.trunc(
-          Math.abs(
-            Math.sin(c)) * 255),
-        Math.trunc(
-          Math.abs(
-            Math.cos(c)) * 255),
-        Math.trunc(
-          Math.abs(
-            Math.floor(
-              Math.tan(c)) - Math.tan(c)) * 255),
+        Math.trunc(Math.abs(Math.sin(c)) * 255),
+        Math.trunc(Math.abs(Math.cos(c)) * 255),
+        Math.trunc(Math.abs(Math.floor(Math.tan(c)) - Math.tan(c)) * 255),
         Math.abs(
-          Math.floor(
-            Math.abs(Math.atan(c) ** Math.sin(c))) - Math.abs(Math.atan(c) ** Math.sin(c))
+          Math.floor(Math.abs(Math.atan(c) ** Math.sin(c))) -
+            Math.abs(Math.atan(c) ** Math.sin(c))
         )
       ])
   }
@@ -279,7 +304,7 @@ function App () {
 
   //Logic to determine appropriate control panel display//
   if (playerReady) {
-      controlPanel = <button onClick={preBuild}>Unanswer</button>
+    controlPanel = <button onClick={preBuild}>Unanswer</button>
   } else if (playing) {
     controlPanel = (
       <div>
@@ -305,7 +330,6 @@ function App () {
   )
   return (
     <div className='App'>
-
       <Aleph playing={playing} bar={beatConductor} colors={unanswer.colors} />
       <section className='control'>{controlPanel}</section>
       <Footer />
