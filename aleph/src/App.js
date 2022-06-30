@@ -53,9 +53,6 @@ function App () {
 
   //----------main functions----------//
 
-  //Controller for blip rendering//
-  const blipz = function () {}
-
   //Set-up for the loop and starts the main Transport//
   const preBuild = function (style) {
     Tone.Transport.bpm.value = unanswer.bpm
@@ -366,6 +363,13 @@ function App () {
       />
     )
   }
+
+  
+  //Controller for blip rendering//
+  const blipz = function () {
+    console.log('blipz')
+  }
+
 
   //----------App rendering----------//
   console.log(

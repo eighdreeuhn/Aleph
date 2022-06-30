@@ -86,7 +86,7 @@ button {
     text-align: center;
     width: 50%;
     height: 10%;
-    margin-top: 10%
+    margin-top: 5%
   }
 
   .aleph-container {
@@ -94,5 +94,13 @@ button {
     display: flexbox;
     justify-items: center;
     padding: 5% 15%;
+  }
+
+  .appear {
+    margin-top: 5%;
+  }
+
+  .blipz-animation-overlay {
+    grid-row: 2;
   }
 }
