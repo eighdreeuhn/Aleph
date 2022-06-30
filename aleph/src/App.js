@@ -57,7 +57,7 @@ function App () {
   const blipz = function () {}
 
   //Set-up for the loop and starts the main Transport//
-  const preBuild = function () {
+  const preBuild = function (style) {
     Tone.Transport.bpm.value = unanswer.bpm
     gain.toDestination()
     phaser.connect(gain)
@@ -133,7 +133,11 @@ function App () {
 
     mainVoice = new Tone.PolySynth(Tone.Synth).connect(phaser)
     harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
-    cycle = new Tone.Loop(ambientChimes, '1m')
+    style === 'ambient' ?
+    cycle = new Tone.Loop(ambientChimes, '1m') :
+    style === 'hip-hop' ?
+    cycle = new Tone.Loop(hipHopBeat, '1m') :
+    cycle = null
     Tone.Transport.start()
     cycle.start()
   }
@@ -178,7 +182,7 @@ function App () {
   const arpeggiator = function () {}
 
   //Main player function//
-  const play = function (time) {
+  const hipHopBeat = function (time) {
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
     setBeatConductor(
@@ -326,7 +330,11 @@ function App () {
 
   //Logic to determine appropriate control panel display//
   if (playerReady) {
-    controlPanel = <button onClick={preBuild}>Unanswer</button>
+    controlPanel = 
+      <div>
+        <button className = 'song-button' onClick={() => preBuild('ambient')}>Unanswer in ambient</button>
+        <button className='song-button' onClick={() => preBuild('hip-hop')}>Unanswer in beats</button>
+    </div>
   } else if (playing) {
     controlPanel = (
       <div>
