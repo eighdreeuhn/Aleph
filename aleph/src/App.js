@@ -28,7 +28,7 @@ function App () {
   let thirty2nd
   const gain = new Tone.Gain(masterVolume)
   const phaser = new Tone.Compressor()
-  const lowPass = new Tone.Mono()
+  const lowPass = new Tone.Distortion()
 
   //----------Instruments----------//
 
@@ -85,7 +85,7 @@ function App () {
       oscillator: {
         type: 'sine'
       }
-    }).connect(lowPass)
+    }).connect(phaser)
 
     snareDrum = new Tone.NoiseSynth({
       volume: 3,
@@ -117,8 +117,8 @@ function App () {
         sustain: 0.25,
         delay: 0.3
       },
-      harmonicity: 5
-    }).connect(phaser)
+      harmonicity: 4
+    }).connect(lowPass)
 
     mainCoreVoice = new Tone.Synth({
       envelope: {
@@ -162,50 +162,38 @@ function App () {
       `Current counter: ${counter}\n\n  Current time: ${time}\n\n Transfer position: ${Tone.Transport.position}\n\n Measure duration: ${measure}`
     )
     rootTone = unanswer.notes[counter]
-    //Percussion line//
-    if ((counter + 1) % 2 == 0) {
-      // chord()
-      bassDrum.triggerAttackRelease(55, '4n')
-      hiHat.triggerAttackRelease(880, '16n')
+    if ((counter + 1) % 2 === 0) {
+
+      //Percussion line//
+      bassDrum.triggerAttackRelease(55, '8n')
+      bassDrum.triggerAttackRelease(55, '8n', `+${quarter}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${quarter}`)
       snareDrum.triggerAttackRelease('16n', `+${half}`)
-      hiHat.triggerAttackRelease(880, '16n', `+${half + eigth}`)
-      bassDrum.triggerAttackRelease(55, '4n', `+${quarter + eigth}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${half}`)
       hiHat.triggerAttackRelease(880, '16n', `+${half + quarter}`)
-      bassDrum.triggerAttackRelease(55, '4n', `+${half}`)
-      bassDrum.triggerAttackRelease(55, '4n', `+${half + quarter + eigth}`)
-      // snareDrum.triggerAttackRelease('16n', `+${ eigth}`)
-      // bassDrum.triggerAttackRelease(22, '4n')
-      // bassDrum.triggerAttackRelease(22, '4n')
-      // hiHat.triggerAttackRelease(440, '16n', `+${half}`, 2)
-    } else if ((counter + 1) % 2 == 1) {
-      // chord()
-      hiHat.triggerAttackRelease(880, '16n')
+      bassDrum.triggerAttackRelease(55, '8n', `+${half + quarter + eigth}`)
+
+      //Bassline
+      bass.triggerAttackRelease(rootTone/2, '8n' )
+      bass.triggerAttackRelease(rootTone/2, '8n', `+${quarter}`)
+      chord()
+    } else if ((counter + 1) % 2 === 1) {
+
+      //Percussion line//
       bassDrum.triggerAttackRelease(55, '4n')
       bassDrum.triggerAttackRelease(55, '4n', `+${quarter}`)
-      // bassDrum.triggerAttackRelease(55, '4n', `+${quarter + sixt}`)
-      bassDrum.triggerAttackRelease(55, '4n', `+${quarter + eigth}`)
-      crash.triggerAttackRelease('4n')
-      // snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
-      // snareDrum.triggerAttackRelease('16n', `+${half + eigth+ sixt}`)
-    }
+      hiHat.triggerAttackRelease(880, '16n',`+${quarter}`)
+      snareDrum.triggerAttackRelease('16n', `+${half}`)
+      hiHat.triggerAttackRelease(880, '16n',`+${half}`)
+      crash.triggerAttackRelease(220,'8n', `+${half}`)
+      hiHat.triggerAttackRelease(880, '16n',`+${half + quarter}`)
+      snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
 
-    // bassDrum.triggerAttackRelease(22, '4n', time + half + quarter + eigth)
-    // bassDrum.triggerAttackRelease(22, '4n', '+.75')
-    // bassDrum.triggerAttackRelease(22, '4n', '+1')
-    // bassDrum.triggerAttackRelease(55, '8n', time + 0.5, 1)
-    // hiHat.triggerAttackRelease(440, '16n', time + 0.25, 2)
-    // bass.triggerAttackRelease(rootTone/2*(A**-1), '8n')
-    // bass.triggerAttackRelease(rootTone/2, '8n', `+${sixt}`)
-    // bass.triggerAttackRelease(rootTone/2, '8n', time + eigth)
-    // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.25, 1)
-    // bassDrum.triggerAttackRelease(rootTone * 0.25, '4n', time + measure * 0.5, 1)
-    // bassDrum.triggerAttackRelease(rootTone * 0.25,'4n', time + measure * 0.75, 1)
-    // mainVoice.triggerAttackRelease(rootTone, '4n', time, 2)
-    // mainVoice.triggerAttackRelease(rootTone * A ** 7 * 4, '4n', time + measure * 0.5, 1)
-    // mainVoice.triggerAttackRelease(rootTone * 2, '8n', time + 0.75, 1)
-    // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 8, '8n',  time + measure * 0.75, 1)
-    // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 4, '8n', time + measure * 0.75, 1)
-    // harmonizer.triggerAttackRelease(rootTone * A ** 7 * 2, '8n', time + measure * 0.75, 1)
+      //Bassline
+      bass.triggerAttackRelease(rootTone/2, '8n' )
+      bass.triggerAttackRelease(rootTone/2, '8n', `+${quarter}`)
+      chord()
+    }
   }
 
   const stopPlay = function () {
