@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import * as Tone from 'tone'
 import Aleph from './Components/Aleph'
-import Blip from './Components/Blip'
+import Blipz from './Components/Blipz'
 import SearchForm from './Components/SearchForm'
 import Footer from './Components/Footer'
 import './App.css'
@@ -159,7 +159,7 @@ function App () {
     counter =
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     console.log(
-      `Current counter: ${counter}\n\n  Current time: ${time}\n\n Transfer position: ${Tone.Transport.position}\n\n Measure duration: ${measure}`
+      `Current counter: ${counter}\n\n  Current time: ${time}\n\n Current Transport position: ${Tone.Transport.position}\n\n Measure duration: ${measure}`
     )
     rootTone = unanswer.notes[counter]
     if ((counter + 1) % 2 === 0) {
@@ -180,8 +180,8 @@ function App () {
     } else if ((counter + 1) % 2 === 1) {
 
       //Percussion line//
-      bassDrum.triggerAttackRelease(55, '4n')
-      bassDrum.triggerAttackRelease(55, '4n', `+${quarter}`)
+      bassDrum.triggerAttackRelease(55, '8n')
+      bassDrum.triggerAttackRelease(55, '8n', `+${quarter}`)
       hiHat.triggerAttackRelease(880, '16n',`+${quarter}`)
       snareDrum.triggerAttackRelease('16n', `+${half}`)
       hiHat.triggerAttackRelease(880, '16n',`+${half}`)
@@ -198,14 +198,9 @@ function App () {
 
   const stopPlay = function () {
     //need to research this
-    if (playing) {
       Tone.Transport.stop()
       Tone.Transport.cancel()
       setPlaying(false)
-    } else {
-      Tone.Transport.start()
-      setPlaying(true)
-    }
   }
 
   //Ramp up the bpm of the main loop//
@@ -233,8 +228,7 @@ function App () {
   //Hashing function for transforming character code into wavelength (hertz)//
   //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
   //the function: f(n) = f(0) * A^(n) (hz)
-  const interpolateNotes = phrase =>
-    phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
+  const interpolateNotes = phrase => phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
 
   //Hashing function for transforming character codes into colors based on wavelength//
   //This is a pretty crazy way of accomplishing this, and I suspect that there's//
@@ -301,7 +295,7 @@ function App () {
   } else if (playing) {
     controlPanel = (
       <div>
-        <button onClick={stopPlay}>{playing ? `Stopz!` : `Playz!`}</button>
+        <button onClick={stopPlay}>Stopz!</button>
         <button onClick={rampUp}>Rampz!</button>
         <button onClick={rampDown}>Slowz!</button>
         <button onClick={volUp}>Loudz!</button>
@@ -323,6 +317,7 @@ function App () {
   )
   return (
     <div className='App'>
+      <Blipz effect={blipz}/>
       <Aleph playing={playing} bar={beatConductor} colors={unanswer.colors} />
       <section className='control'>{controlPanel}</section>
       <Footer />
