@@ -37,7 +37,7 @@ function App () {
   let hiHat
   let crash
   let bass
-  let mainCoreVoice
+  let chime
   let mainVoice
   let harmonizer
 
@@ -121,20 +121,46 @@ function App () {
       harmonicity: 4
     }).connect(lowPass)
 
-    mainCoreVoice = new Tone.Synth({
-      envelope: {
-        attack: 0.25,
-        sustain: 0.25,
-        delay: 0.1,
-        release: 0.25
+    chime = new Tone.PolySynth(Tone.Synth, {
+      oscillator: {
+        volume: 5,
+        count: 3,
+        spread: 40,
+        type: 'sine'
       }
-    })
+    }).connect(phaser)
 
     mainVoice = new Tone.PolySynth(Tone.Synth).connect(phaser)
     harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
-    cycle = new Tone.Loop(play, '1m')
+    cycle = new Tone.Loop(ambientChimes, '1m')
     Tone.Transport.start()
     cycle.start()
+  }
+
+  const generatePalette = tone => {
+    let palette = []
+    for (let i = 0; i <= 4; i += 2) {
+      if (i === 0) {
+        palette.push(tone)
+        palette.push(tone * A ** 3)
+        palette.push(tone * A ** 5)
+        palette.push(tone * A ** 7)
+        palette.push(tone / 8)
+        palette.push((tone / 8) * A ** 3)
+        palette.push((tone / 8) * A ** 5)
+        palette.push((tone / 8) * A ** 7)
+      } else {
+        palette.push(tone * i)
+        palette.push(tone / i)
+        palette.push(tone * i * A ** 3)
+        palette.push((tone / i) * A ** 3)
+        palette.push(tone * i * A ** 5)
+        palette.push((tone / i) * A ** 5)
+        palette.push(tone * i * A ** 7)
+        palette.push((tone / i) * A ** 7)
+      }
+    }
+    return palette.sort((a, b) => a - b)
   }
 
   //Strikes a major chord
@@ -163,7 +189,6 @@ function App () {
     )
     rootTone = unanswer.notes[counter]
     if ((counter + 1) % 2 === 0) {
-
       //Percussion line//
       bassDrum.triggerAttackRelease(55, '8n')
       bassDrum.triggerAttackRelease(55, '8n', `+${quarter}`)
@@ -174,33 +199,55 @@ function App () {
       bassDrum.triggerAttackRelease(55, '8n', `+${half + quarter + eigth}`)
 
       //Bassline
-      bass.triggerAttackRelease(rootTone/2, '8n' )
-      bass.triggerAttackRelease(rootTone/2, '8n', `+${quarter}`)
+      bass.triggerAttackRelease(rootTone / 2, '8n')
+      bass.triggerAttackRelease(rootTone / 2, '8n', `+${quarter}`)
       chord()
     } else if ((counter + 1) % 2 === 1) {
-
       //Percussion line//
       bassDrum.triggerAttackRelease(55, '8n')
       bassDrum.triggerAttackRelease(55, '8n', `+${quarter}`)
-      hiHat.triggerAttackRelease(880, '16n',`+${quarter}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${quarter}`)
       snareDrum.triggerAttackRelease('16n', `+${half}`)
-      hiHat.triggerAttackRelease(880, '16n',`+${half}`)
-      crash.triggerAttackRelease(220,'8n', `+${half}`)
-      hiHat.triggerAttackRelease(880, '16n',`+${half + quarter}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${half}`)
+      crash.triggerAttackRelease(220, '8n', `+${half}`)
+      hiHat.triggerAttackRelease(880, '16n', `+${half + quarter}`)
       snareDrum.triggerAttackRelease('16n', `+${half + eigth}`)
 
       //Bassline
-      bass.triggerAttackRelease(rootTone/2, '8n' )
-      bass.triggerAttackRelease(rootTone/2, '8n', `+${quarter}`)
+      bass.triggerAttackRelease(rootTone / 2, '8n')
+      bass.triggerAttackRelease(rootTone / 2, '8n', `+${quarter}`)
       chord()
     }
   }
 
+  const ambientChimes = function (time) {
+    gain.gain.rampTo(masterVolume, 0.25)
+    setBeatConductor(
+      parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
+    )
+    counter = parseInt(Tone.Transport.position.split(':')[0] % unanswer.notes.length)
+    let palette = generatePalette(unanswer.notes[counter])
+    bassDrum.triggerAttackRelease('A2', '8n')
+    bassDrum.triggerAttackRelease('A2', '8n', `+${quarter}`)
+    bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
+    bassDrum.triggerAttackRelease('A2', '8n', `+${half + quarter}`)
+    palette.forEach((note, i) => {
+      chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
+      // drumz.triggerAttackRelease('D1', 0.1, now + (2 * i + 1), 4)
+      // poly.triggerAttackRelease(note, 1, now + (2 * i), 2)
+      // poly.triggerAttackRelease(note * 8, 1, now + (2 * i), 2)
+      // poly.triggerAttackRelease(note * 0.5, 1, now + (2 * i), 2)
+      // poly.triggerAttackRelease(note * 0.25, 1, now + (2 * i), 2)
+      // poly.triggerAttackRelease(note * (a ** 19), 1, now + (2 * i), 2)
+    })
+    // drumz.triggerAttackRelease('A1', '16n', '+1')
+  }
+
   const stopPlay = function () {
     //need to research this
-      Tone.Transport.stop()
-      Tone.Transport.cancel()
-      setPlaying(false)
+    Tone.Transport.stop()
+    Tone.Transport.cancel()
+    setPlaying(false)
   }
 
   //Ramp up the bpm of the main loop//
@@ -228,7 +275,8 @@ function App () {
   //Hashing function for transforming character code into wavelength (hertz)//
   //Converts each letter into its character code modulus 24 (two octaves of half-tones) and applies
   //the function: f(n) = f(0) * A^(n) (hz)
-  const interpolateNotes = phrase => phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
+  const interpolateNotes = phrase =>
+    phrase.split('').map(l => ROOT * A ** (l.charCodeAt(0) % 36))
 
   //Hashing function for transforming character codes into colors based on wavelength//
   //This is a pretty crazy way of accomplishing this, and I suspect that there's//
@@ -252,12 +300,11 @@ function App () {
   //Hashing function to distill inherent beats per minute from a string//
   const extractBPM = phrase => {
     let rawBpm =
-      (phrase
+      phrase
         .split('')
         .map(l => l.charCodeAt(0))
-        .reduce((a, b) => a + b, 0) %
-        20)
-    return 120 + (rawBpm * 2)
+        .reduce((a, b) => a + b, 0) % 20
+    return 120 + rawBpm * 2
   }
 
   //Search field change handler//
@@ -308,7 +355,7 @@ function App () {
   )
   return (
     <div className='App'>
-      <Blipz effect={blipz}/>
+      <Blipz effect={blipz} />
       <Aleph playing={playing} bar={beatConductor} colors={unanswer.colors} />
       <section className='control'>{controlPanel}</section>
       <Footer />

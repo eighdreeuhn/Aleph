@@ -62,6 +62,10 @@ function App () {
         palette.push(tone*(a**3))
         palette.push(tone*(a**5))
         palette.push(tone*(a**7))
+        palette.push(tone/8)
+        palette.push(tone/8*(a**3))
+        palette.push(tone/8*(a**5))
+        palette.push(tone/8*(a**7))
       } else {
         palette.push(tone*i)
         palette.push(tone/i)
