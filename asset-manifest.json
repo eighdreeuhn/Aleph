@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/Aleph/static/css/main.c78d9538.css",
-    "main.js": "/Aleph/static/js/main.949a201a.js",
+    "main.css": "/Aleph/static/css/main.49c57d70.css",
+    "main.js": "/Aleph/static/js/main.15c308d2.js",
     "static/js/787.ae89a97c.chunk.js": "/Aleph/static/js/787.ae89a97c.chunk.js",
     "static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg": "/Aleph/static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.153ad5bddaf2bf97a687.jpeg",
     "index.html": "/Aleph/index.html",
-    "main.c78d9538.css.map": "/Aleph/static/css/main.c78d9538.css.map",
-    "main.949a201a.js.map": "/Aleph/static/js/main.949a201a.js.map",
+    "main.49c57d70.css.map": "/Aleph/static/css/main.49c57d70.css.map",
+    "main.15c308d2.js.map": "/Aleph/static/js/main.15c308d2.js.map",
     "787.ae89a97c.chunk.js.map": "/Aleph/static/js/787.ae89a97c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c78d9538.css",
-    "static/js/main.949a201a.js"
+    "static/css/main.49c57d70.css",
+    "static/js/main.15c308d2.js"
   ]
 }
