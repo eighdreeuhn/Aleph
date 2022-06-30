@@ -1,7 +1,7 @@
 .App {
   position: relative;
   display: grid;
-  grid-template-rows: 90% 5% 27%;
+  grid-template-rows: 85% 10% 5%;
   text-align: center;
   background-image: url('./resources/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg');
   background-repeat: no-repeat;
@@ -67,14 +67,17 @@ button {
   height: 3em;
 }
 
-/* .control {
-} */
-
 .footer {
   text-align: right;
   grid-row: 3 / 4;
+  background-color: black;
   color: white;
 }
+
+@media screen and (min-width: 440) {
+
+}
+
 
 @media screen and (min-width: 768px) {
   .App {
