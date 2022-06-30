@@ -11,9 +11,12 @@ function App () {
 
   //constants ofr calculating note frequencies with A2 as root
   const a = 2 ** (1 / 12)
-  const root = 55
+  const root = 220
 
   let load = true
+  let cycle
+  let notes = []
+  let counter
   
   const playBoi = new Tone.Compressor(-50, 5).toDestination()
   const poly = new Tone.PolySynth(Tone.Synth, {
@@ -21,8 +24,18 @@ function App () {
       volume: 5,
       count: 3,
       spread: 40,
-      type : "fatsawtooth"
+      type : "sine"
     }
+  }).connect(playBoi)
+
+  const drumz = new Tone.MembraneSynth({
+    oscillator: {
+      type: 'sine'
+    },
+    attack: 0.1,
+    sustain: 0.3,
+    delay: 0.25,
+    release: 0.1
   }).connect(playBoi)
 
   const bass = new Tone.Synth({
@@ -41,6 +54,28 @@ function App () {
     return phrase.split('').map(l => root * (a ** (l.charCodeAt(0) % 24)))
   }
 
+  const generatePalette = (tone) => {
+    let palette = []
+    for (let i = 0; i <= 4; i += 2) {
+      if (i === 0) {
+        palette.push(tone)
+        palette.push(tone*(a**3))
+        palette.push(tone*(a**5))
+        palette.push(tone*(a**7))
+      } else {
+        palette.push(tone*i)
+        palette.push(tone/i)
+        palette.push(tone*i*(a**3))
+        palette.push(tone/i*(a**3))
+        palette.push(tone*i*(a**5))
+        palette.push(tone/i*(a**5))
+        palette.push(tone*i*(a**7))
+        palette.push(tone/i*(a**7))
+      }
+    } 
+    return palette.sort((a, b) => a - b)
+  }
+
   const handlePhraseChange = function(e) {
       setPhrase(e.target.value)
   }
@@ -53,9 +88,11 @@ function App () {
 
   const handlePhraseSubmit = function(e) {
     e.preventDefault()
-    const notes = interpolateNotes(phrase)
+    notes = interpolateNotes(phrase)
     setPhrase('')
-    play(notes)
+    cycle = new Tone.Loop(play, '1m')
+    Tone.Transport.start()
+    cycle.start()
   }
   const handleLetterSubmit = function(e) {
     e.preventDefault()
@@ -64,14 +101,17 @@ function App () {
     playChord(note)
   }
 
-  const play = (notes) => {
+  const play = (time) => {
     if (load === true) {
-      const now = Tone.now()
-      // const poly = new Tone.PolySynth(Tone.Synth).connect(playBoi)
-      // const drumz = new Tone.PolySynth(Tone.NoiseSynth).connect(playBoi)
-      notes.forEach((note, i) => {
-        bass.triggerAttackRelease(note, '8n')
-        // drumz.triggerAttackRelease('A1', 0.1, now + (2 * i), 5)
+      counter = Tone.Transport.position.split(':')[0] % notes.length
+      console.log(counter)
+      let palette = generatePalette(notes[counter])
+      drumz.triggerAttackRelease('A2', '8n')
+      drumz.triggerAttackRelease('A2', '8n', '+0.5')
+      drumz.triggerAttackRelease('A2', '8n', '+1')
+      drumz.triggerAttackRelease('A2', '8n', '+1.5')
+      palette.forEach((note, i) => {
+        poly.triggerAttackRelease(note, '2n', `+${((2/palette.length)*i)}`)
         // drumz.triggerAttackRelease('D1', 0.1, now + (2 * i + 1), 4)
         // poly.triggerAttackRelease(note, 1, now + (2 * i), 2)
         // poly.triggerAttackRelease(note * 8, 1, now + (2 * i), 2)
@@ -79,6 +119,7 @@ function App () {
         // poly.triggerAttackRelease(note * 0.25, 1, now + (2 * i), 2)
         // poly.triggerAttackRelease(note * (a ** 19), 1, now + (2 * i), 2)
       })
+      // drumz.triggerAttackRelease('A1', '16n', '+1')
     }
   }
 
