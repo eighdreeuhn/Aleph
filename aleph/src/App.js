@@ -58,6 +58,7 @@ function App () {
 
   //Set-up for the loop and starts the main Transport//
   const preBuild = function () {
+    Tone.Transport.bpm.value = unanswer.bpm
     gain.toDestination()
     phaser.connect(gain)
     lowPass.connect(gain)
@@ -150,7 +151,6 @@ function App () {
 
   //Main player function//
   const play = function (time) {
-    Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 0.1)
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
     setBeatConductor(
@@ -256,15 +256,8 @@ function App () {
         .split('')
         .map(l => l.charCodeAt(0))
         .reduce((a, b) => a + b, 0) %
-        110) *
-      2
-    return rawBpm === 0
-      ? 120
-      : rawBpm < 50
-      ? rawBpm * 6
-      : rawBpm < 100
-      ? rawBpm * 3
-      : rawBpm
+        20)
+    return 120 + (rawBpm * 2)
   }
 
   //Search field change handler//
@@ -284,8 +277,6 @@ function App () {
       setUnanswer(unanswerCopy)
       setUnsearch('')
       setPlayerReady(true)
-      // setPlaying(true)
-      // preBuild()
     }
   }
 
