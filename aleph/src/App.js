@@ -246,8 +246,9 @@ function App () {
   //Stop playback and clear Transport values//
   const stopPlay = function () {
     //need to research this more
-    Tone.Transport.stop()
     Tone.Transport.cancel()
+    Tone.Transport.stop()
+    console.log(cycle)
     setPlaying(false)
   }
 
@@ -356,7 +357,7 @@ function App () {
 
   //----------App rendering----------//
   console.log(
-    `  Playing: ${Tone.Transport.state}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
+    `  Playing: ${playing}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
   )
   return (
     <div className='App'>
