@@ -7,7 +7,7 @@ import Footer from './Components/Footer'
 import './App.css'
 
 //----------Global constants--------//
-let masterVolume = 1
+let masterVolume = 0.5
 const A = 2 ** (1 / 12)
 const ROOT = 55
 
