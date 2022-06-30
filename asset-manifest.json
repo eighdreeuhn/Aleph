@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Aleph/static/css/main.c78d9538.css",
+    "main.js": "/Aleph/static/js/main.bd79bb88.js",
+    "static/js/787.ae89a97c.chunk.js": "/Aleph/static/js/787.ae89a97c.chunk.js",
+    "static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.jpeg": "/Aleph/static/media/tumblr_mys9xiZQAM1sxm8cbo1_500.153ad5bddaf2bf97a687.jpeg",
+    "index.html": "/Aleph/index.html",
+    "main.c78d9538.css.map": "/Aleph/static/css/main.c78d9538.css.map",
+    "main.bd79bb88.js.map": "/Aleph/static/js/main.bd79bb88.js.map",
+    "787.ae89a97c.chunk.js.map": "/Aleph/static/js/787.ae89a97c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c78d9538.css",
+    "static/js/main.bd79bb88.js"
+  ]
+}
