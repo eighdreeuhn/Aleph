@@ -150,7 +150,7 @@ function App () {
 
   //Main player function//
   const play = function (time) {
-    Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 1)
+    Tone.Transport.bpm.exponentialRampTo(unanswer.bpm, 0.1)
     gain.gain.rampTo(masterVolume, 0.25)
     //Get an index from the current measure relative to the total number of notes//
     setBeatConductor(
@@ -163,8 +163,8 @@ function App () {
     )
     rootTone = unanswer.notes[counter]
     //Percussion line//
-    if (counter % 2 == 0) {
-      chord()
+    if ((counter + 1) % 2 == 0) {
+      // chord()
       bassDrum.triggerAttackRelease(55, '4n')
       hiHat.triggerAttackRelease(880, '16n')
       snareDrum.triggerAttackRelease('16n', `+${half}`)
@@ -177,8 +177,8 @@ function App () {
       // bassDrum.triggerAttackRelease(22, '4n')
       // bassDrum.triggerAttackRelease(22, '4n')
       // hiHat.triggerAttackRelease(440, '16n', `+${half}`, 2)
-    } else if (counter % 2 == 1) {
-      chord()
+    } else if ((counter + 1) % 2 == 1) {
+      // chord()
       hiHat.triggerAttackRelease(880, '16n')
       bassDrum.triggerAttackRelease(55, '4n')
       bassDrum.triggerAttackRelease(55, '4n', `+${quarter}`)
