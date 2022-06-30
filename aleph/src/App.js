@@ -148,22 +148,22 @@ function App () {
     for (let i = 0; i <= 4; i += 2) {
       if (i === 0) {
         palette.push(tone)
-        palette.push(tone * A ** 3)
-        palette.push(tone * A ** 5)
-        palette.push(tone * A ** 7)
-        palette.push(tone / 8)
-        palette.push((tone / 8) * A ** 3)
-        palette.push((tone / 8) * A ** 5)
-        palette.push((tone / 8) * A ** 7)
+        palette.push(tone*(A**3))
+        palette.push(tone*(A**5))
+        palette.push(tone*(A**7))
+        palette.push(tone/8)
+        palette.push((tone/8)*(A**3))
+        palette.push((tone/8)*(A**5))
+        palette.push((tone/8)*(A**7))
       } else {
-        palette.push(tone * i)
-        palette.push(tone / i)
-        palette.push(tone * i * A ** 3)
-        palette.push((tone / i) * A ** 3)
-        palette.push(tone * i * A ** 5)
-        palette.push((tone / i) * A ** 5)
-        palette.push(tone * i * A ** 7)
-        palette.push((tone / i) * A ** 7)
+        palette.push(tone*i)
+        palette.push(tone/i)
+        palette.push((tone*i)*(A**3))
+        palette.push((tone/i)*(A**3))
+        palette.push(tone*i*(A**5))
+        palette.push((tone/i)*(A**5))
+        palette.push((tone*i)*(A**7))
+        palette.push((tone/i)*(A**7))
       }
     }
     return palette
@@ -171,12 +171,12 @@ function App () {
 
   //Strikes a major chord
   const chord = function () {
-    mainVoice.triggerAttackRelease(rootTone / 2, '2n')
-    mainVoice.triggerAttackRelease(rootTone / 4, '2n')
-    mainVoice.triggerAttackRelease(rootTone / 8, '2n')
-    mainVoice.triggerAttackRelease(rootTone, '2n')
-    mainVoice.triggerAttackRelease(rootTone * A ** 7, '2n')
-    mainVoice.triggerAttackRelease(rootTone * A ** 4, '2n')
+    mainVoice.triggerAttackRelease(rootTone/2,'2n')
+    mainVoice.triggerAttackRelease(rootTone/4,'2n')
+    mainVoice.triggerAttackRelease(rootTone/8,'2n')
+    mainVoice.triggerAttackRelease(rootTone,'2n')
+    mainVoice.triggerAttackRelease(rootTone*(A**7),'2n')
+    mainVoice.triggerAttackRelease(rootTone*(A**4), '2n')
   }
 
   const arpeggiator = function () {}
@@ -346,9 +346,9 @@ function App () {
   //Logic to determine appropriate control panel display//
   if (playerReady) {
     controlPanel = 
-      <div>
-        <button className = 'appear' onClick={() => preBuild('ambient')}>Unanswer: ambient</button>
-        <button className='appear' onClick={() => preBuild('hip-hop')}>Unanswer: beats</button>
+      <div className='appear'>
+        <button onClick={() => preBuild('ambient')}>Unanswer: ambient</button>
+        <button onClick={() => preBuild('hip-hop')}>Unanswer: beats</button>
     </div>
   } else if (playing) {
     controlPanel = (
