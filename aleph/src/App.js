@@ -233,17 +233,25 @@ function App () {
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     )
     counter = parseInt(Tone.Transport.position.split(':')[0] % unanswer.notes.length)
+    rootTone = unanswer.notes[counter]
     let palette = generatePalette(unanswer.notes[counter])
     bassDrum.triggerAttackRelease('A2', '8n')
-    hiHat.triggerAttackRelease('C5', '8n', `+${quarter}`)
     bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
-    hiHat.triggerAttackRelease('C5', '8n', `+${half + quarter}`)
     for (let i = 0; i < palette.length; i++) {
       let rngTone = Math.floor(Math.random() * palette.length)
       let silenceController = Math.floor(Math.random() * 10)
-      if (silenceController !== 3 && silenceController !== 7) {
+      if (silenceController !== 3 && silenceController !== 5 && silenceController !== 7) {
           chime.triggerAttackRelease(palette[rngTone], '2n', `+${(measure / palette.length) * i}`)
       }
+    }
+    if (counter % 3 === 0) {
+      bass.triggerAttackRelease(rootTone/2, '4n')
+      bass.triggerAttackRelease((rootTone/2)*(A**3), '4n', `+${quarter}`)
+      bass.triggerAttackRelease((rootTone/2)*(A**5), '4n', `+${half}`)
+    } else {
+      bass.triggerAttackRelease(rootTone, '4n')
+      bass.triggerAttackRelease((rootTone)*(A**3), '4n', `+${quarter}`)
+      bass.triggerAttackRelease((rootTone)*(A**5), '4n', `+${half}`)
     }
     // palette.forEach((note, i) => {
     //   chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
