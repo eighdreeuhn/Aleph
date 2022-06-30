@@ -4,14 +4,17 @@ import './App.css'
 function App () {
   let cycle
   let bassDrum
+  let crash
   
-  let crash = new Tone.MetalSynth(
-    {
-      frequency: 500,
-      oscillator: {
-      },
-      harmonicity: 5
-    })
+  crash = new Tone.MetalSynth({
+    frequency: 500,
+    envelope: {
+      attack: 0.1,
+      sustain: 0.25,
+      delay: 0.3
+    },
+    harmonicity: 4
+  })
     let hiHat
     let bpm = 1
     let gain = 1
@@ -21,25 +24,29 @@ function App () {
     bassDrum = new Tone.MembraneSynth().connect(preGain)
     hiHat = new Tone.MetalSynth().connect(preGain)
     crash.connect(preGain)
-    cycle = new Tone.Loop(beats, '4n')
-    Tone.start()
+    cycle = new Tone.Loop(beats, '1m')
+    // Tone.start()
     Tone.Transport.start()
     cycle.start(0)
   }
 
   function beats (time) {
-    // console.log(time)
+    console.log(time, Tone.Transport.bpm.value)
     // preGain.gain.rampTo(gain, 0.25)
     // bassDrum.triggerAttackRelease(50, '16n', time, 2)
     // hiHat.triggerAttackRelease(880, '32n', time + 1, 1)
     // // hiHat.triggerAttackRelease(880, '32n', time + .75, 1)
-    crash.triggerAttackRelease('8n')
-    crash.triggerAttackRelease('8n', '+1')
-    crash.triggerAttackRelease('8n', '+2')
-    crash.triggerAttackRelease('8n', '+3')
+    crash.triggerAttackRelease(880, '4n', time)
+    crash.triggerAttackRelease(880, '4n', time + .5)
+    crash.triggerAttackRelease(880, '4n', time + 1)
+    crash.triggerAttackRelease(880, '4n', time + 1.5)
   }
 
-  function stopCycle () {}
+  function stopCycle () {
+    Tone.Transport.stop()
+    Tone.Transport.cancel()
+    console.log(Tone.Transport)
+  }
 
   function rampBPM () {
     bpm +=.1

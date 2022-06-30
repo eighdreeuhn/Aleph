@@ -198,9 +198,14 @@ function App () {
 
   const stopPlay = function () {
     //need to research this
-    gain.disconnect()
-    Tone.Transport.stop()
-    setPlaying(false)
+    if (playing) {
+      Tone.Transport.stop()
+      Tone.Transport.cancel()
+      setPlaying(false)
+    } else {
+      Tone.Transport.start()
+      setPlaying(true)
+    }
   }
 
   //Ramp up the bpm of the main loop//
@@ -296,7 +301,7 @@ function App () {
   } else if (playing) {
     controlPanel = (
       <div>
-        <button onClick={stopPlay}>Stopz!</button>
+        <button onClick={stopPlay}>{playing ? `Stopz!` : `Playz!`}</button>
         <button onClick={rampUp}>Rampz!</button>
         <button onClick={rampDown}>Slowz!</button>
         <button onClick={volUp}>Loudz!</button>
