@@ -234,14 +234,14 @@ function App () {
     )
     counter = parseInt(Tone.Transport.position.split(':')[0] % unanswer.notes.length)
     let palette = generatePalette(unanswer.notes[counter])
-    // bassDrum.triggerAttackRelease('A2', '8n')
-    bassDrum.triggerAttackRelease('A2', '8n', `+${quarter}`)
-    // bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
-    bassDrum.triggerAttackRelease('A2', '8n', `+${half + quarter}`)
+    bassDrum.triggerAttackRelease('A2', '8n')
+    hiHat.triggerAttackRelease('C5', '8n', `+${quarter}`)
+    bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
+    hiHat.triggerAttackRelease('C5', '8n', `+${half + quarter}`)
     for (let i = 0; i < palette.length; i++) {
       let rngTone = Math.floor(Math.random() * palette.length)
       let silenceController = Math.floor(Math.random() * 10)
-      if (silenceController !== 3) {
+      if (silenceController !== 3 && silenceController !== 7) {
           chime.triggerAttackRelease(palette[rngTone], '2n', `+${(measure / palette.length) * i}`)
       }
     }
