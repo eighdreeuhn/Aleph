@@ -1,4 +1,6 @@
 const Aleph = props => {
+
+  console.log(props)
   let bar = !props.playing ? 0 : props.bar;
 
   let alephColor = !props.playing

@@ -24,6 +24,15 @@
   }
 }
 
+@keyframes appear {
+  from {
+    opacity: 0%;
+  }
+  to {
+    opacity: 100%
+  }
+}
+
 .aleph-container {
   grid-row: 1 / 2;
 display: flexbox;
@@ -44,7 +53,8 @@ padding: 5% 15%;
   margin-bottom: 10%;
 }
 
-button {
+.appear {
+  animation: appear 1s ease-in;
   width: auto;
   height: 50px;
   margin: 5px;

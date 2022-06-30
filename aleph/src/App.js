@@ -166,7 +166,7 @@ function App () {
         palette.push((tone / i) * A ** 7)
       }
     }
-    return palette.sort((a, b) => a - b)
+    return palette
   }
 
   //Strikes a major chord
@@ -234,13 +234,20 @@ function App () {
     )
     counter = parseInt(Tone.Transport.position.split(':')[0] % unanswer.notes.length)
     let palette = generatePalette(unanswer.notes[counter])
-    bassDrum.triggerAttackRelease('A2', '8n')
+    // bassDrum.triggerAttackRelease('A2', '8n')
     bassDrum.triggerAttackRelease('A2', '8n', `+${quarter}`)
-    bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
+    // bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
     bassDrum.triggerAttackRelease('A2', '8n', `+${half + quarter}`)
-    palette.forEach((note, i) => {
-      chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
-    })
+    for (let i = 0; i < palette.length; i++) {
+      let rngTone = Math.floor(Math.random() * palette.length)
+      let silenceController = Math.floor(Math.random() * 10)
+      if (silenceController !== 3) {
+          chime.triggerAttackRelease(palette[rngTone], '2n', `+${(measure / palette.length) * i}`)
+      }
+    }
+    // palette.forEach((note, i) => {
+    //   chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
+    // })
   }
 
   //Stop playback and clear Transport values//
@@ -248,7 +255,6 @@ function App () {
     //need to research this more
     Tone.Transport.cancel()
     Tone.Transport.stop()
-    console.log(cycle)
     setPlaying(false)
   }
 
@@ -333,15 +339,13 @@ function App () {
   if (playerReady) {
     controlPanel = 
       <div>
-        <button className = 'song-button' onClick={() => preBuild('ambient')}>Unanswer in ambient</button>
-        <button className='song-button' onClick={() => preBuild('hip-hop')}>Unanswer in beats</button>
+        <button className = 'appear' onClick={() => preBuild('ambient')}>Unanswer: ambient</button>
+        <button className='appear' onClick={() => preBuild('hip-hop')}>Unanswer: beats</button>
     </div>
   } else if (playing) {
     controlPanel = (
-      <div>
+      <div className='appear'>
         <button onClick={stopPlay}>Stopz!</button>
-        {/* <button onClick={rampUp}>Rampz!</button> */}
-        {/* <button onClick={rampDown}>Slowz!</button> */}
         <button onClick={volUp}>Loudz!</button>
         <button onClick={VolDown}>Shhhz!!</button>
       </div>
