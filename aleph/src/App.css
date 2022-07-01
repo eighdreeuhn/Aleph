@@ -55,10 +55,7 @@ padding: 5% 15%;
 
 .appear {
   animation: appear 1s ease-in;
-  width: auto;
-  height: 50px;
-  margin: 5px;
-  border-radius: 5px;
+  background-color: black;
 }
 
 button {
