@@ -7,9 +7,18 @@ import Footer from './Components/Footer'
 import './App.css'
 
 //----------Global constants--------//
-let masterVolume = 0.5
+let masterVolume
 const A = 2 ** (1 / 12)
 const ROOT = 55
+let cycle
+let rootTone
+let measure
+let whole
+let half
+let quarter
+let eigth
+let sixt
+let thirty2nd
 
 //Main page
 //All logic takes place here
@@ -17,17 +26,9 @@ const ROOT = 55
 function App () {
   //----------Wiring network----------//
 
-  let cycle
-  let rootTone
-  let measure
-  let whole
-  let half
-  let quarter
-  let eigth
-  let sixt
-  let thirty2nd
-  const gain = new Tone.Gain(masterVolume)
-  const phaser = new Tone.Compressor()
+  const gain = new Tone.Gain(masterVolume).toDestination()
+  const compressor = new Tone.Compressor()
+  const phaser = new Tone.Phaser()
   const lowPass = new Tone.Distortion()
 
   //----------Instruments----------//
@@ -56,9 +57,6 @@ function App () {
   //Set-up for the loop and starts the main Transport//
   const preBuild = function (style) {
     Tone.Transport.bpm.value = unanswer.bpm
-    gain.toDestination()
-    phaser.connect(gain)
-    lowPass.connect(gain)
     setPlaying(true)
     setPlayerReady(false)
     measure = 60 / (unanswer.bpm / 4)
@@ -84,7 +82,7 @@ function App () {
       oscillator: {
         type: 'sine'
       }
-    }).connect(phaser)
+    }).chain(phaser, compressor, gain)
 
     snareDrum = new Tone.NoiseSynth({
       volume: 3,
@@ -98,7 +96,7 @@ function App () {
         sustain: 0.2,
         release: 0.1
       }
-    }).connect(lowPass)
+    })
 
     hiHat = new Tone.MetalSynth({
       envelope: {
@@ -107,7 +105,7 @@ function App () {
         delay: 0.3,
         release: 0.2
       }
-    }).connect(phaser)
+    })
 
     crash = new Tone.MetalSynth({
       frequency: 500,
@@ -117,7 +115,7 @@ function App () {
         delay: 0.3
       },
       harmonicity: 4
-    }).connect(lowPass)
+    })
 
     chime = new Tone.PolySynth(Tone.Synth, {
       oscillator: {
@@ -126,10 +124,10 @@ function App () {
         spread: 40,
         type: 'sine'
       }
-    }).connect(phaser)
+    }).chain(phaser, compressor, gain)
 
-    mainVoice = new Tone.PolySynth(Tone.Synth).connect(phaser)
-    harmonizer = new Tone.PolySynth(Tone.FMSynth).connect(phaser)
+    mainVoice = new Tone.PolySynth(Tone.Synth)
+    harmonizer = new Tone.PolySynth(Tone.FMSynth)
     style === 'ambient' ?
     cycle = new Tone.Loop(ambientChimes, '1m') :
     style === 'hip-hop' ?
@@ -225,7 +223,8 @@ function App () {
 
   //Plays a windchime simulation with minimalistic beat accompaniment//
   const ambientChimes = function (time) {
-    gain.gain.rampTo(masterVolume, 0.25)
+    masterVolume = 0.5
+    gain.gain.rampTo(masterVolume, 1)
     setBeatConductor(
       parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     )
@@ -233,14 +232,14 @@ function App () {
     rootTone = unanswer.notes[counter]
     let palette = generatePalette(unanswer.notes[counter])
     bassDrum.triggerAttackRelease('A2', '8n')
-    bassDrum.triggerAttackRelease('A2', '8n', `+${half}`)
-    for (let i = 0; i < palette.length; i++) {
-      let rngTone = Math.floor(Math.random() * palette.length)
-      let silenceController = Math.floor(Math.random() * 10)
-      if (silenceController !== 3 && silenceController !== 5 && silenceController !== 7) {
-          chime.triggerAttackRelease(palette[rngTone], '2n', `+${(measure / palette.length) * i}`)
-      }
-    }
+    bassDrum.triggerAttackRelease('A2', '8n', time + half)
+    // for (let i = 0; i < palette.length; i++) {
+    //   let rngTone = Math.floor(Math.random() * palette.length)
+    //   let silenceController = Math.floor(Math.random() * 10)
+    //   if (silenceController !== 3 && silenceController !== 5 && silenceController !== 7) {
+    //       chime.triggerAttackRelease(palette[rngTone], '2n', `+${(measure / palette.length) * i}`)
+    //   }
+    // }
     if (counter % 3 === 0) {
       bass.triggerAttackRelease(rootTone/2, '4n')
       bass.triggerAttackRelease((rootTone/2)*(A**3), '4n', `+${quarter}`)
@@ -250,9 +249,9 @@ function App () {
       bass.triggerAttackRelease((rootTone)*(A**3), '4n', `+${quarter}`)
       bass.triggerAttackRelease((rootTone)*(A**5), '4n', `+${half}`)
     }
-    // palette.forEach((note, i) => {
-    //   chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
-    // })
+    palette.forEach((note, i) => {
+      chime.triggerAttackRelease(note, '2n', `+${(measure / palette.length) * i}`)
+    })
   }
 
   //Stop playback and clear Transport values//
@@ -317,7 +316,7 @@ function App () {
         .split('')
         .map(l => l.charCodeAt(0))
         .reduce((a, b) => a + b, 0) % 20
-    return 120 + rawBpm * 2
+    return 90 + rawBpm
   }
 
   //Search field change handler//
