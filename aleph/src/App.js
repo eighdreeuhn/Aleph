@@ -410,7 +410,7 @@ function App () {
           built into the library. this is intended to instead act as a learning
           tool for all o0f the functionalities of the library itself.
         </h4>
-      <button className='chimes-player' onClick={handleTest}></button>
+      <button className='chimes-player' onClick={handleTest}>PLAY</button>
       </div>
       {/* <div className='controls'>
         <label>Synth Type </label>
