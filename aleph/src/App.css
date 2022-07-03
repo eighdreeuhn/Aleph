@@ -49,7 +49,7 @@
 .App {
   display: grid;
   background-color: black;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: 1fr 4fr 3em;
   text-align: center;
   height: 100%;
 }
@@ -102,7 +102,7 @@
   top: 5%;
   left: 20%;
   background-color: rgb(255, 224, 98);
-  border: 1px solid grey;
+  border: 2px solid lightgrey;
   border-radius: 5px;
   z-index: 1;
 }
@@ -171,6 +171,93 @@
   color: white;
 }
 
+@media screen and (min-width: 440) {
+
+  .App {
+    grid-template-rows: 1fr 4fr;
+  }
+
+  .windchimes-container {
+    grid-row: 2;
+  }
+  .center-rope {
+    top: 15%;
+    left: 48%;
+    background: #84532a;
+    height: 75%;
+    width: 2%;
+    transform: rotate(-3deg);
+    transform-origin: 3px 5px;
+    animation: rope-swing 5s infinite ease-in-out;
+  }
+  
+  .top-bar {
+    position: absolute;
+    width: 60%;
+    height: 5%;
+    top: 5%;
+    left: 20%;
+    background-color: rgb(255, 224, 98);
+    border: 2px solid lightgrey;
+    border-radius: 5px;
+    z-index: 1;
+  }
+  
+  .chime {
+    position: absolute;
+    margin: 5px;
+    top: 10%;
+    background: #caffff;
+    border-radius: 10px;
+    width: 5%;
+    transform: rotate(-5deg);
+    transform-origin: 5px 8px;
+    animation: swing 3s infinite ease-in-out;
+  }
+  
+  .chime-1 {
+    left: 21%;
+    height: 20%;
+  }
+  
+  .chime-2 {
+    left: 31%;
+    height: 40%;
+  }
+  
+  .chime-3 {
+    left: 41%;
+    height: 30%;
+  }
+  
+  .chime-4 {
+    left: 51%;
+    height: 45%;
+  }
+  
+  .chime-5 {
+    left: 61%;
+    height: 35%;
+  }
+  
+  .chime-6 {
+    left: 71%;
+    height: 25%;
+  }
+  
+  .wind-anchor {
+    position: absolute;
+    bottom: 15%;
+    left: 45%;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: rgb(255, 224, 98);
+    transform: translateX(25%);
+    animation: anchor-swing 5s infinite ease-in-out;
+  }
+}
+
 /* .top {
   grid-row: 1;
   grid-column: 1 / 3;
@@ -214,8 +301,6 @@ button {
 }
 
 
-/* @media screen and (min-width: 440) {
-}
 
 @media screen and (min-width: 768px) {
   .App {
