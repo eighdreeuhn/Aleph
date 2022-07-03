@@ -16,6 +16,24 @@
   }
 }
 
+@keyframes swing {
+  /* 0% {transform: rotate(0deg);
+    transform-origin: 0px 0px}; */
+  25% {transform: rotate(5deg);
+    transform-origin: 5px 8px;}
+  /* 50% {transform: rotate(0deg);
+    transform-origin: 0px 0px}; */
+  75%{transform: rotate(-5deg);
+    transform-origin: 5px 8px;}
+}
+
+@keyframes swing-2 {
+  30% {transform: rotate(3deg);
+  transform-origin: 5px 8px;}
+  60%{transform: rotate(-3deg);
+  transform-origin: 5px 8px;}
+}
+
 .App {
   display: grid;
   background-color: black;
@@ -28,7 +46,7 @@
 .about {
   background-color: black;
   color: white;
-  border-right: 2px solid black;
+  border-right: 2px solid white;
   border-bottom: 2px solid black;
 }
 
@@ -36,6 +54,8 @@
   grid-column: 1;
   grid-row: 2;
   color: white;
+  border-right: 2px solid white;
+  border-bottom: 1px solid white;
   background-color: black;
   padding-top: 15%;
 }
@@ -44,10 +64,68 @@ select {
   width: 100%;
 }
 
+.windchimes-container {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  position: relative;
+  color: rgb(255, 255, 255);
+  background-color: rgb(138, 121, 121);
+}
+
+.center-rope {
+  position:absolute;
+  margin:5px;
+  left: 48%;
+  background:#84532a;
+  height:75%;
+  width: 2%;
+}
+
+.chime {
+  position:absolute;
+  margin:5px;
+  top: 10%;
+  background:#d9eded;
+  border-radius: 10px;
+  width:5%;
+  animation: swing 3s infinite ease
+}
+
+.chime-1 {
+  left:23%;
+  height:20%;
+}
+
+.chime-2 {
+  left:33%;
+  height:30%;
+}
+
+.chime-3 {
+  left:43%;
+  height:40%;
+}
+
+.chime-4 {
+  left:50%;
+  height:40%;
+}
+
+.chime-5 {
+  left:60%;
+  height:40%;
+}
+
+.chime-6 {
+  left:70%;
+  height:40%;
+}
+
 .footer {
   text-align: right;
   grid-row: 3 / 4;
   grid-column: 1 / 3;
+  border-top: 1px solid white;
   background-color: black;
   color: white;
 }

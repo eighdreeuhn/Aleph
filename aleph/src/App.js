@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
 import * as Tone from 'tone'
+import Windchime from './Components/Windchime'
 import Aleph from './Components/Aleph'
-import Blipz from './Components/Blipz'
 import SearchForm from './Components/SearchForm'
 import Footer from './Components/Footer'
 import './App.css'
-import { PolySynth } from 'tone'
-import { computeHeadingLevel } from '@testing-library/react'
+import { PolySynth } from 'tone' 
 
 //----------Global constants--------//
 let masterVolume = 1
@@ -18,15 +17,16 @@ let measure
 let bpm
 let wave
 let buffer
-//Main page
-//All logic takes place here
 
 function App () {
-  console.clear()
+
+ 
+  console.clear() // ==> handy trick I picked up from a YouTuber :)
+
   //----------Wiring network----------//
 
   const reverb = new Tone.Reverb({
-    wet: 0.4
+    wet: 0.5
   }).toDestination()
   const gain = new Tone.Gain(masterVolume).connect(reverb)
   // const compressor = new Tone.Compressor().toDestination()
@@ -110,6 +110,8 @@ function App () {
   //----------main functions----------//
   console.log(instrument)
 
+  //Hanfler for changing synth types//
+  //discards the old synth and creates an new PolySynth based on choice and connects to gain//
   const handleSynthChange = function (e) {
     instrument.synth.disconnect()
     instrument.synth.dispose()
@@ -118,19 +120,22 @@ function App () {
     copy.synth = newSynth
     setInstrument(copy)
   }
-
+  
+  //Hanfler for changing durations//
   const handleDurationChange = function (e) {
     let copy = { ...instrument }
     copy.duration = e.target.value
     setInstrument(copy)
   }
-
+  
+  //Hanfler for changing key//
   const handleKeyChange = function (e) {
     let copy = { ...instrument }
     copy.key = e.target.value
     setInstrument(copy)
   }
 
+  //test//
   const handleTest = function () {
     instrument.synth.triggerAttackRelease(
       `${instrument.key}`,
@@ -138,36 +143,37 @@ function App () {
     )
   }
 
-  // const generatePalette = tone => {
-  //   let palette = []
-  //   for (let i = 0; i <= 4; i += 2) {
-  //     if (i === 0) {
-  //       palette.push(tone)
-  //       palette.push(tone * A ** 3)
-  //       palette.push(tone * A ** 5)
-  //       palette.push(tone * A ** 7)
-  //       palette.push(tone / 8)
-  //       palette.push((tone / 8) * A ** 3)
-  //       palette.push((tone / 8) * A ** 5)
-  //       palette.push((tone / 8) * A ** 7)
-  //     } else {
-  //       palette.push(tone * i)
-  //       palette.push(tone / i)
-  //       palette.push(tone * i * A ** 3)
-  //       palette.push((tone / i) * A ** 3)
-  //       palette.push(tone * i * A ** 5)
-  //       palette.push((tone / i) * A ** 5)
-  //       palette.push(tone * i * A ** 7)
-  //       palette.push((tone / i) * A ** 7)
-  //     }
-  //   }
-  //   return palette
-  // }
+  //takes the current key and returns a range of notes within the root's context//
+  const generatePalette = tone => {
+    let palette = []
+    for (let i = 0; i <= 4; i += 2) {
+      if (i === 0) {
+        palette.push(tone)
+        palette.push(tone * A ** 3)
+        palette.push(tone * A ** 5)
+        palette.push(tone * A ** 7)
+        palette.push(tone / 8)
+        palette.push((tone / 8) * A ** 3)
+        palette.push((tone / 8) * A ** 5)
+        palette.push((tone / 8) * A ** 7)
+      } else {
+        palette.push(tone * i)
+        palette.push(tone / i)
+        palette.push(tone * i * A ** 3)
+        palette.push((tone / i) * A ** 3)
+        palette.push(tone * i * A ** 5)
+        palette.push((tone / i) * A ** 5)
+        palette.push(tone * i * A ** 7)
+        palette.push((tone / i) * A ** 7)
+      }
+    }
+    return palette.sort()
+  }
 
   //Set-up for the loop and starts the main Transport//
   //Plays a windchime simulation with minimalistic beat accompaniment//
-  // const ambientChimes = function (time) {
-  //   console.log(time)
+  const ambientChimes = function () {
+    // console.log(time)
     // setBeatConductor(
     //   parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     // )
@@ -175,15 +181,15 @@ function App () {
     //   Tone.Transport.position.split(':')[0] % unanswer.notes.length
     // )
     // rootTone = unanswer.notes[counter]
-  //   let palette = generatePalette(instrument)
-  //   for (const i in palette) {
-  //     chime.triggerAttackRelease(
-  //       palette[i],
-  //       '4n',
-  //       `+${(1 / palette.length) * i}`
-  //     )
-  //   }
-  // }
+    let palette = generatePalette(instrument.key)
+    for (const i in palette) {
+      instrument.synth.triggerAttackRelease(
+        palette[i],
+        instrument.duration,
+        `+${(1 / palette.length) * i}`,
+      )
+    }
+  }
   // const preBuild = function () {
   //   wave = new Tone.Waveform()
   //   buffer = chime.connect(compressor)
@@ -420,7 +426,7 @@ function App () {
         <button className='play/pause' onClick={handleTest}>
           Chimes
         </button>
-        <button className='chimes-player' onClick={handleTest}>
+        <button className='chimes-player' onClick={ambientChimes}>
           Play
         </button>
       </div>
@@ -440,6 +446,7 @@ function App () {
         <section className='control'>{controlPanel}</section>
       </section>
       <Blipz /> */}
+      <Windchime/>
       <Footer />
     </div>
   )
