@@ -48,7 +48,6 @@ function App () {
   const stopCycle = function() {
     Tone.Transport.stop()
     Tone.Transport.cancel()
-    console.log(Tone.Transport.position)
   }
 
   return (

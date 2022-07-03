@@ -11,7 +11,6 @@
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr, 2fr;
-  background-color: black;
 }
 
 .top {
@@ -27,7 +26,7 @@
   grid-row: 1;
   background-image: url('./doodle_in_black_and_white_by_layla_rose_d1m4nvm.jpg');
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   padding-top: 10%;
   padding-left: 10%;
   border-right: 2px solid white;
@@ -40,6 +39,7 @@
 }
 
 .control-panel {
+  display: flexbox;
   grid-row: 1;
   grid-column: 2;
 }
@@ -63,6 +63,10 @@ input {
   width: 300px;
 }
 
+canvas {
+  height: 100%;
+  width: 100%;
+}
 footer {
   color: white;
 }

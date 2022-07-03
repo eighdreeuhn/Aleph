@@ -1,8 +1,7 @@
 const Blipz = props => {
     
   return (
-    <div className="blipz-animation-overlay">
-    </div>
+    <canvas className='blipz'></canvas>
   );
 };
 
