@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Aleph/static/css/main.ea73f837.css",
-    "main.js": "/Aleph/static/js/main.7715b64e.js",
+    "main.css": "/Aleph/static/css/main.e31a02f0.css",
+    "main.js": "/Aleph/static/js/main.b88f03a0.js",
     "static/js/787.ae89a97c.chunk.js": "/Aleph/static/js/787.ae89a97c.chunk.js",
     "index.html": "/Aleph/index.html",
-    "main.ea73f837.css.map": "/Aleph/static/css/main.ea73f837.css.map",
-    "main.7715b64e.js.map": "/Aleph/static/js/main.7715b64e.js.map",
+    "main.e31a02f0.css.map": "/Aleph/static/css/main.e31a02f0.css.map",
+    "main.b88f03a0.js.map": "/Aleph/static/js/main.b88f03a0.js.map",
     "787.ae89a97c.chunk.js.map": "/Aleph/static/js/787.ae89a97c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ea73f837.css",
-    "static/js/main.7715b64e.js"
+    "static/css/main.e31a02f0.css",
+    "static/js/main.b88f03a0.js"
   ]
 }
