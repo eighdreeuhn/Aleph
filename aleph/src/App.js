@@ -499,7 +499,9 @@ function App () {
         <section className='control'>{controlPanel}</section>
       </section>
       <Blipz /> */}
-      <Windchime />
+      <section className='main'>
+        <Windchime />
+      </section>
       <Footer />
     </div>
   )
