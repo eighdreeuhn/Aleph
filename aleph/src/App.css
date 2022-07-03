@@ -43,8 +43,7 @@
 .App {
   display: grid;
   background-color: black;
-  grid-template-rows: 1fr 1fr auto;
-  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr 3fr;
   text-align: center;
   height: 100%;
 }
@@ -56,7 +55,7 @@
   border-bottom: 2px solid black;
 }
 
-.controls {
+/* .controls {
   grid-column: 1;
   grid-row: 2;
   color: white;
@@ -64,15 +63,14 @@
   border-bottom: 1px solid white;
   background-color: black;
   padding-top: 15%;
-}
+} */
 
-select {
+/* select {
   width: 100%;
-}
+} */
 
 .windchimes-container {
-  grid-column: 2;
-  grid-row: 1 / 3;
+  grid-row: 2;
   position: relative;
   color: rgb(255, 255, 255);
   background-color: rgb(138, 121, 121);

@@ -111,6 +111,14 @@ function App () {
   })
 
   const synths = [synth, mono, duo, amSynth, fmSynth, plucky, membrane, metal]
+  const notes = 
+  [
+    'A2', 'A3', 'A4', 'A5',
+    'B2', 'B3', 'B4', 'B5',
+    'C#2', 'C#3', 'C#4', 'C#5',
+    'E2', 'E3', 'E4', 'E5', 'F#2',
+    'F#3', 'F#4', 'F#5'
+  ]
 
   // const [unsearch, setUnsearch] = useState('')
   // const [unanswer, setUnanswer] = useState({})
@@ -147,37 +155,37 @@ function App () {
 
   //test//
   const handleTest = function () {
-    synths[instrument.current].triggerAttackRelease(
-      `${instrument.key}`,
-      instrument.duration
-    )
+    const loop = new Tone.Loop(ambientChimes, '1m')
+    Tone.Transport.start()
+    loop.start()
   }
 
   //takes the current key and returns a range of notes within the root's context//
   const generatePalette = tone => {
     let palette = []
-    for (let i = 0; i <= 4; i += 2) {
-      if (i === 0) {
-        palette.push(tone)
-        palette.push(tone * A ** 3)
-        palette.push(tone * A ** 5)
-        palette.push(tone * A ** 7)
-        palette.push(tone / 8)
-        palette.push((tone / 8) * A ** 3)
-        palette.push((tone / 8) * A ** 5)
-        palette.push((tone / 8) * A ** 7)
-      } else {
-        palette.push(tone * i)
-        palette.push(tone / i)
-        palette.push(tone * i * A ** 3)
-        palette.push((tone / i) * A ** 3)
-        palette.push(tone * i * A ** 5)
-        palette.push((tone / i) * A ** 5)
-        palette.push(tone * i * A ** 7)
-        palette.push((tone / i) * A ** 7)
-      }
+    palette.push(tone)
+    palette.push(tone)
+    palette.push(tone)
+    for (let i = 1; i <= 6; i++) {
+        if (i !== 3) {
+          palette.push(tone * (A ** i))
+          palette.push(tone * (A ** i))
+          palette.push(tone * (A ** i))
+        }
+        // palette.push(tone)
+        // palette.push(tone * A ** 2)
+        // palette.push(tone * A ** 5)
+        // palette.push(tone * A ** 7)
+        // palette.push(tone * i)
+        // palette.push(tone / i)
+        // palette.push(tone * i * A ** 3)
+        // palette.push((tone / i) * A ** 3)
+        // palette.push(tone * i * A ** 5)
+        // palette.push((tone / i) * A ** 5)
+        // palette.push(tone * i * A ** 7)
+        // palette.push((tone / i) * A ** 7)
     }
-    return palette.sort()
+    return palette
   }
 
   //Set-up for the loop and starts the main Transport//
@@ -191,16 +199,20 @@ function App () {
     //   Tone.Transport.position.split(':')[0] % unanswer.notes.length
     // )
     // rootTone = unanswer.notes[counter]
-    let palette = generatePalette(instrument.key)
-    synths[instrument.current].triggerAttackRelease(
-      `${instrument.key}`,
-      instrument.duration
-      // for (const i in palette) {
-      // palette[i],
-      // instrument.duration,
-      // `+${(1 / palette.length) * i}`
-    )
-    // }
+    // let palette = generatePalette(instrument.key)
+    // synths[instrument.current].triggerAttackRelease(
+    //   `${instrument.key}`,
+    //   instrument.duration)
+      for (const i in notes) {
+        let rngFilter = Math.floor(Math.random() * 10)
+        let rngTone = Math.floor(Math.random() * notes.length)
+        if (rngFilter === 3) {
+          synths[instrument.current].triggerAttackRelease(
+            notes[rngTone], '8n',`+${(2 / notes.length) * i}`
+
+          )
+        }
+    }
   }
   // const preBuild = function () {
   //   wave = new Tone.Waveform()
@@ -387,7 +399,7 @@ function App () {
 
   //----------App rendering----------//
   // console.log(
-  //   `  Playing: ${playing}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
+    //   `  Playing: ${playing}\n\n  Player ready: ${playerReady}\n\n  Color ranges:\n\n${unanswer.colors}\n\n  Notes matrix:\n\n${unanswer.notes}\n\n BPM: ${unanswer.bpm}\n\n Bar: ${Tone.Transport.position}`
   // )
   return (
     <div className='App'>
@@ -398,8 +410,9 @@ function App () {
           built into the library. this is intended to instead act as a learning
           tool for all o0f the functionalities of the library itself.
         </h4>
+      <button className='chimes-player' onClick={handleTest}></button>
       </div>
-      <div className='controls'>
+      {/* <div className='controls'>
         <label>Synth Type </label>
         <select className='synths' onChange={handleSynthChange}>
           <option value={0}>Regular Synth</option>
@@ -437,11 +450,9 @@ function App () {
         </select>
         <button className='play/pause' onClick={handleTest}>
           Chimes
-        </button>
-        <button className='chimes-player' onClick={ambientChimes}>
           Play
         </button>
-      </div>
+      </div> */}
       {/* <section className='top'>
         <div className='aleph-container'>
           <svg
