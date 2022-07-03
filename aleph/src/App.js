@@ -107,7 +107,9 @@ function App () {
   const [instrument, setInstrument] = useState({
     current: 0,
     key: 440,
-    duration: '4n'
+    duration: '4n',
+    playing: false,
+    started: false
   })
 
   const synths = [synth, mono, duo, amSynth, fmSynth, plucky, membrane, metal]
@@ -155,9 +157,29 @@ function App () {
 
   //test//
   const handleTest = function () {
+    let copy = {...instrument}
+    copy.playing = true
+    copy.started = true
+    setInstrument(copy)
     const loop = new Tone.Loop(ambientChimes, '1m')
     Tone.Transport.start()
     loop.start()
+  }
+
+  //Pause the playback//
+  const handlePause = function() {
+    let copy = {...instrument}
+    copy.playing = false
+    setInstrument(copy)
+    Tone.Transport.toggle()
+  }
+
+  //Resume the playback//
+  const handleResume = function() {
+    let copy = {...instrument}
+    copy.playing = true
+    setInstrument(copy)
+    Tone.Transport.toggle()
   }
 
   //takes the current key and returns a range of notes within the root's context//
@@ -371,6 +393,16 @@ function App () {
   // }
 
   //Logic to determine appropriate control panel display//
+  let controlButton
+  if (!instrument.started) {
+    controlButton = <button onClick={handleTest} className='play-button'>Play</button>
+  } else {
+    if (instrument.playing) {
+      controlButton = <button onClick={handlePause} className='pause-button'>Pause</button>
+    } else {
+      controlButton = <button onClick={handleResume} className='resume-button'>Resume</button>
+    }
+  }
   // if (playerReady) {
   //   controlPanel = (
   //     <div className='appear'>
@@ -405,12 +437,10 @@ function App () {
     <div className='App'>
       <div className='about'>
         <h4>
-          This windchime simulation is the result of trying to learn the Tone.js
-          library. I had another project in mind but quickly learned how much is
-          built into the library. this is intended to instead act as a learning
-          tool for all o0f the functionalities of the library itself.
+          This windchime simulation was made using React and the Tone.js
+          library. It was inspired by a walk I took during the planning phase of a different project.
         </h4>
-      <button className='chimes-player' onClick={handleTest}>PLAY</button>
+      {controlButton}
       </div>
       {/* <div className='controls'>
         <label>Synth Type </label>

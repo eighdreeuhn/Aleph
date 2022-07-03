@@ -19,8 +19,10 @@
 @keyframes swing {
   /* 0% {transform: rotate(0deg);
     transform-origin: 0px 0px}; */
-  50% {transform: rotate(5deg);
-    transform-origin: 5px 8px;}
+  50% {
+    transform: rotate(5deg);
+    transform-origin: 5px 8px;
+  }
   /* 50% {transform: rotate(0deg);
     transform-origin: 0px 0px}; */
   /* 66%{transform: rotate(0deg);
@@ -28,14 +30,18 @@
 }
 
 @keyframes rope-swing {
-  50% {transform: rotate(3deg);
-  transform-origin: 3px 5px;}
+  50% {
+    transform: rotate(3deg);
+    transform-origin: 3px 5px;
+  }
   /* 60%{transform: rotate(-3deg);
   transform-origin: 5px 8px;} */
 }
 
 @keyframes anchor-swing {
-  50% {transform: translateX(-50%);}
+  50% {
+    transform: translateX(-50%);
+  }
   /* 60%{transform: rotate(-3deg);
   transform-origin: 5px 8px;} */
 }
@@ -51,8 +57,8 @@
 .about {
   background-color: black;
   color: white;
-  border-right: 2px solid white;
-  border-bottom: 2px solid black;
+  padding: 1em;
+  border-bottom: 2px solid white;
 }
 
 /* .controls {
@@ -73,67 +79,79 @@
   grid-row: 2;
   position: relative;
   color: rgb(255, 255, 255);
-  background-color: rgb(138, 121, 121);
+  background-color: rgb(78, 62, 62);
 }
 
 .center-rope {
-  position:absolute;
-  margin:5px;
+  position: absolute;
+  margin: 5px;
   top: 8%;
   left: 48%;
-  background:#84532a;
-  height:65%;
+  background: #84532a;
+  height: 75%;
   width: 2%;
   transform: rotate(-3deg);
   transform-origin: 3px 5px;
-  animation: rope-swing 5s infinite ease-in-out
+  animation: rope-swing 5s infinite ease-in-out;
+}
+
+.top-bar {
+  position: absolute;
+  width: 60%;
+  height: 5%;
+  top: 5%;
+  left: 20%;
+  background-color: rgb(255, 224, 98);
+  border: 1px solid grey;
+  border-radius: 5px;
+  z-index: 1;
 }
 
 .chime {
-  position:absolute;
-  margin:5px;
+  position: absolute;
+  margin: 5px;
   top: 10%;
-  background:#caffff;
+  background: #caffff;
   border-radius: 10px;
-  width:5%;
+  width: 5%;
   transform: rotate(-5deg);
   transform-origin: 5px 8px;
-  animation: swing 3s infinite ease-in-out
+  animation: swing 3s infinite ease-in-out;
 }
 
 .chime-1 {
-  left:21%;
-  height:10%;
+  left: 21%;
+  height: 20%;
 }
 
 .chime-2 {
-  left:31%;
-  height:30%;
+  left: 31%;
+  height: 40%;
 }
 
 .chime-3 {
-  left:41%;
-  height:20%;
+  left: 41%;
+  height: 30%;
 }
 
 .chime-4 {
-  left:51%;
-  height:35%;
+  left: 51%;
+  height: 45%;
 }
 
 .chime-5 {
-  left:61%;
-  height:25%;
+  left: 61%;
+  height: 35%;
 }
 
 .chime-6 {
-  left:71%;
-  height:15%;
+  left: 71%;
+  height: 25%;
 }
 
 .wind-anchor {
   position: absolute;
-  bottom: 25%;
+  bottom: 15%;
   left: 45%;
   border-radius: 50%;
   width: 50px;
@@ -149,6 +167,7 @@
   grid-column: 1 / 3;
   border-top: 1px solid white;
   background-color: black;
+  height: 3em;
   color: white;
 }
 
@@ -224,4 +243,4 @@ button {
   .blipz-animation-overlay {
     grid-row: 2;
   }
-} */ 
+} */
