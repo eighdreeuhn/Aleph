@@ -84,7 +84,7 @@ select {
   top: 8%;
   left: 48%;
   background:#84532a;
-  height:75%;
+  height:65%;
   width: 2%;
   transform: rotate(-3deg);
   transform-origin: 3px 5px;
@@ -135,7 +135,7 @@ select {
 
 .wind-anchor {
   position: absolute;
-  bottom: 15%;
+  bottom: 25%;
   left: 45%;
   border-radius: 50%;
   width: 50px;

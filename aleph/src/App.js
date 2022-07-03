@@ -5,7 +5,7 @@ import Aleph from './Components/Aleph'
 import SearchForm from './Components/SearchForm'
 import Footer from './Components/Footer'
 import './App.css'
-import { PolySynth } from 'tone' 
+import { PolySynth } from 'tone'
 
 //----------Global constants--------//
 let masterVolume = 1
@@ -19,16 +19,13 @@ let wave
 let buffer
 
 function App () {
-
- 
   console.clear() // ==> handy trick I picked up from a YouTuber :)
 
   //----------Wiring network----------//
 
-  const reverb = new Tone.Reverb({
-    wet: 0.5
-  }).toDestination()
-  const gain = new Tone.Gain(masterVolume).connect(reverb)
+  const reverb = new Tone.Reverb().toDestination()
+  const gain = new Tone.Gain().connect(reverb)
+  const wah = new Tone.AutoWah().connect(gain)
   // const compressor = new Tone.Compressor().toDestination()
   // const phaser = new Tone.Phaser()
   // const lowPass = new Tone.LowpassCombFilter()
@@ -89,16 +86,32 @@ function App () {
 
   // const mainVoice = new Tone.PolySynth(Tone.Synth)
 
-  const chime = new Tone.PolySynth(Tone.Synth).connect(gain)
+  const synth = new Tone.Synth({
+    envelope: {
+      attack: 0.01,
+      decay: 0.25,
+      sustain: 0.01,
+      decay: 0.5
+    }
+  }).connect(wah)
+  const mono = new Tone.MonoSynth()
+  const duo = new Tone.DuoSynth()
+  const amSynth = new Tone.AMSynth()
+  const fmSynth = new Tone.FMSynth()
+  const plucky = new Tone.PluckSynth()
+  const membrane = new Tone.MembraneSynth()
+  const metal = new Tone.MetalSynth()
 
   //----------State & global variables----------//
 
-  const [instrument, setInstrument] = useState(
-    {
-        synth: chime,
-        key: 440,
-        duration: '4n'
-    })
+  const [instrument, setInstrument] = useState({
+    current: 0,
+    key: 440,
+    duration: '4n'
+  })
+
+  const synths = [synth, mono, duo, amSynth, fmSynth, plucky, membrane, metal]
+
   // const [unsearch, setUnsearch] = useState('')
   // const [unanswer, setUnanswer] = useState({})
   // const [playerReady, setPlayerReady] = useState(false)
@@ -113,21 +126,18 @@ function App () {
   //Hanfler for changing synth types//
   //discards the old synth and creates an new PolySynth based on choice and connects to gain//
   const handleSynthChange = function (e) {
-    instrument.synth.disconnect()
-    instrument.synth.dispose()
     let copy = { ...instrument }
-    const newSynth = new Tone.PolySynth(Tone[e.target.value]).connect(gain)
-    copy.synth = newSynth
+    copy.current = e.target.value
     setInstrument(copy)
   }
-  
+
   //Hanfler for changing durations//
   const handleDurationChange = function (e) {
     let copy = { ...instrument }
     copy.duration = e.target.value
     setInstrument(copy)
   }
-  
+
   //Hanfler for changing key//
   const handleKeyChange = function (e) {
     let copy = { ...instrument }
@@ -137,7 +147,7 @@ function App () {
 
   //test//
   const handleTest = function () {
-    instrument.synth.triggerAttackRelease(
+    synths[instrument.current].triggerAttackRelease(
       `${instrument.key}`,
       instrument.duration
     )
@@ -173,7 +183,7 @@ function App () {
   //Set-up for the loop and starts the main Transport//
   //Plays a windchime simulation with minimalistic beat accompaniment//
   const ambientChimes = function () {
-    // console.log(time)
+    console.log(synths[instrument.current])
     // setBeatConductor(
     //   parseInt(Tone.Transport.position.split(':')[0]) % unanswer.notes.length
     // )
@@ -182,13 +192,15 @@ function App () {
     // )
     // rootTone = unanswer.notes[counter]
     let palette = generatePalette(instrument.key)
-    for (const i in palette) {
-      instrument.synth.triggerAttackRelease(
-        palette[i],
-        instrument.duration,
-        `+${(1 / palette.length) * i}`,
-      )
-    }
+    synths[instrument.current].triggerAttackRelease(
+      `${instrument.key}`,
+      instrument.duration
+      // for (const i in palette) {
+      // palette[i],
+      // instrument.duration,
+      // `+${(1 / palette.length) * i}`
+    )
+    // }
   }
   // const preBuild = function () {
   //   wave = new Tone.Waveform()
@@ -390,14 +402,14 @@ function App () {
       <div className='controls'>
         <label>Synth Type </label>
         <select className='synths' onChange={handleSynthChange}>
-          <option value='Synth'>Regular Synth</option>
-          <option value='MonoSynth'>Mono Synth</option>
-          <option value='DuoSynth'>Duo Synth</option>
-          <option value='AMSynth'>AM Synth</option>
-          <option value='FMSynth'>FM Synth</option>
-          <option value='PluckSynth'>Pluck Synth</option>
-          <option value='MembraneSynth'>Membrane Synth</option>
-          <option value='MetalSynth'>Metal Synth</option>
+          <option value={0}>Regular Synth</option>
+          <option value={1}>Mono Synth</option>
+          <option value={2}>Duo Synth</option>
+          <option value={3}>AM Synth</option>
+          <option value={4}>FM Synth</option>
+          <option value={5}>Pluck Synth</option>
+          <option value={6}>Membrane Synth</option>
+          <option value={7}>Metal Synth</option>
         </select>
         <label>Note duration </label>
         <select className='duration' onChange={handleDurationChange}>
@@ -410,9 +422,9 @@ function App () {
         </select>
         <label>Key</label>
         <select className='key' onChange={handleKeyChange}>
-          <option value={440.00}>A</option>
+          <option value={440.0}>A</option>
           <option value={466.16}>A#</option>
-          <option value={246.94	}>B</option>
+          <option value={246.94}>B</option>
           <option value={261.63}>C</option>
           <option value={277.18}>C#</option>
           <option value={293.66}>D</option>
@@ -420,8 +432,8 @@ function App () {
           <option value={329.63}>E</option>
           <option value={349.23}>F</option>
           <option value={369.99}>F#</option>
-          <option value={392.00}>G</option>
-          <option value={415.30}>G#</option>
+          <option value={392.0}>G</option>
+          <option value={415.3}>G#</option>
         </select>
         <button className='play/pause' onClick={handleTest}>
           Chimes
@@ -446,7 +458,7 @@ function App () {
         <section className='control'>{controlPanel}</section>
       </section>
       <Blipz /> */}
-      <Windchime/>
+      <Windchime />
       <Footer />
     </div>
   )
