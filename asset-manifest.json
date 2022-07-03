@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/Aleph/static/css/main.f23b7e53.css",
-    "main.js": "/Aleph/static/js/main.b88f03a0.js",
+    "main.css": "/Aleph/static/css/main.f6c47630.css",
+    "main.js": "/Aleph/static/js/main.0c9aecf0.js",
     "static/js/787.ae89a97c.chunk.js": "/Aleph/static/js/787.ae89a97c.chunk.js",
+    "static/media/pustynia-namib-diuny-nebo-zviozdy-desert-namib-dunes-sky-sta.jpeg": "/Aleph/static/media/pustynia-namib-diuny-nebo-zviozdy-desert-namib-dunes-sky-sta.b1724330394e68c5d9a3.jpeg",
     "index.html": "/Aleph/index.html",
-    "main.f23b7e53.css.map": "/Aleph/static/css/main.f23b7e53.css.map",
-    "main.b88f03a0.js.map": "/Aleph/static/js/main.b88f03a0.js.map",
+    "main.f6c47630.css.map": "/Aleph/static/css/main.f6c47630.css.map",
+    "main.0c9aecf0.js.map": "/Aleph/static/js/main.0c9aecf0.js.map",
     "787.ae89a97c.chunk.js.map": "/Aleph/static/js/787.ae89a97c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f23b7e53.css",
-    "static/js/main.b88f03a0.js"
+    "static/css/main.f6c47630.css",
+    "static/js/main.0c9aecf0.js"
   ]
 }
