@@ -35,7 +35,7 @@
 }
 
 @keyframes anchor-swing {
-  50% {transform: translateX(-75%);}
+  50% {transform: translateX(-50%);}
   /* 60%{transform: rotate(-3deg);
   transform-origin: 5px 8px;} */
 }
@@ -139,7 +139,7 @@
   width: 50px;
   height: 50px;
   background-color: rgb(255, 224, 98);
-  transform: translateX(50%);
+  transform: translateX(25%);
   animation: anchor-swing 5s infinite ease-in-out;
 }
 
